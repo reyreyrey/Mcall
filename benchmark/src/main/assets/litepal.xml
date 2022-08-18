@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<litepal>
+    <dbname value="data_user" />
+    <version value="4" />
+    <list>
+        <mapping class="myapplication.modules.login.LoginBean" />
+        <mapping class="myapplication.bean.MemberAddBean"/>
+        <mapping class="myapplication.modules.groupMemberList.GroupMemberListBean"/>
+        <mapping class="myapplication.modules.searchUser.SearchUserBean"/>
+        <mapping class="myapplication.bean.ConfigBean"/>
+    </list>
+</litepal>
