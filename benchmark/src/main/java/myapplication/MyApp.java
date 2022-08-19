@@ -1,7 +1,14 @@
 package myapplication;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
+import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Lifecycle;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 
@@ -23,17 +30,21 @@ import myapplication.base.RequestHandler;
 import myapplication.base.RequestServer;
 import myapplication.base.UAIntercept;
 import myapplication.bean.ConfigBean;
+import myapplication.utils.Config;
 import okhttp3.Cookie;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 
-public class MyApp extends MultiDexApplication {
+public class MyApp extends MultiDexApplication implements Application.ActivityLifecycleCallbacks {
     public static OkHttpClient okHttpClient;
+    String  keywords =
+            "财务,cw,CW,ZB,zb,主持,管理,机器人,亚泰,招财猫,财财,客服";
     @Override
     public void onCreate() {
         super.onCreate();
         LitePal.initialize(this);
         init();
+        registerActivityLifecycleCallbacks(this);
     }
     private static HashMap<String, List<Cookie>> cookieStore = new HashMap<>();
     private static String getCacheKey(HttpUrl url) {
@@ -91,14 +102,57 @@ public class MyApp extends MultiDexApplication {
         EasyConfig.getInstance().addHeader("User-Agent", "MCall/1.2.6(iPhone;iOS 15.6;Scale/3.00)");
 
 
-        ConfigBean configBean = new ConfigBean();
-        configBean.setRegCount(10);
-        configBean.save();
+        if(Config.getConfig() == null){
+            ConfigBean configBean = new ConfigBean();
+            configBean.setRegCount(10);
+            configBean.setGroupJoniTime(30);
+            configBean.setNickNameKeyWords(keywords);
+            configBean.setConfigid(1);
+            configBean.save();
+        }
+
     }
 
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
+    }
+
+    public static FragmentActivity fragmentActivity;
+
+    @Override
+    public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
+        fragmentActivity = (FragmentActivity) activity;
+    }
+
+    @Override
+    public void onActivityStarted(@NonNull Activity activity) {
+
+    }
+
+    @Override
+    public void onActivityResumed(@NonNull Activity activity) {
+
+    }
+
+    @Override
+    public void onActivityPaused(@NonNull Activity activity) {
+
+    }
+
+    @Override
+    public void onActivityStopped(@NonNull Activity activity) {
+
+    }
+
+    @Override
+    public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
+
+    }
+
+    @Override
+    public void onActivityDestroyed(@NonNull Activity activity) {
+        fragmentActivity = null;
     }
 }

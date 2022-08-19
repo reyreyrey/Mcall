@@ -8,7 +8,7 @@
 
         <include layout="@layout/include_toolbar" />
 
-        <androidx.core.widget.NestedScrollView
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
@@ -86,6 +86,75 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:layout_marginTop="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:text="主群id"
+                        android:textColor="#333333"
+                        android:textSize="16dp" />
+
+                    <EditText
+                        android:background="@null"
+                        android:id="@+id/edt_group_id"
+                        android:hint="请输入主群id"
+                        android:inputType="number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:text="主群群主账号"
+                        android:textColor="#333333"
+                        android:textSize="16dp" />
+
+                    <EditText
+                        android:background="@null"
+                        android:id="@+id/edt_main_group_account"
+                        android:hint="请输入主群群主账号"
+                        android:inputType="number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:text="主群群主密码"
+                        android:textColor="#333333"
+                        android:textSize="16dp" />
+
+                    <EditText
+                        android:background="@null"
+                        android:id="@+id/edt_main_group_pwd"
+                        android:hint="请输入主群群主密码"
+                        android:inputType="number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_marginTop="8dp"
                     android:layout_height="wrap_content"
@@ -127,11 +196,35 @@
                         android:inputType="number"
                         android:id="@+id/edt_ip_proxy_url"
                         android:hint="请输入IP代理链接"
+                        android:minHeight="80dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:text="昵称关键词"
+                        android:textColor="#333333"
+                        android:textSize="16dp" />
+
+                    <EditText
+                        android:background="@null"
+                        android:inputType="number"
+                        android:id="@+id/edt_nickname_keyword"
+                        android:hint="请输入昵称关键词，用英文逗号分割，比如张三,李四,王五"
+                        android:minHeight="200dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
             </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
+        </ScrollView>
 
         <androidx.appcompat.widget.AppCompatButton
             android:layout_width="match_parent"

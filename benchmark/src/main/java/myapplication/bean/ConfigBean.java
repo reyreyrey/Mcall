@@ -2,6 +2,7 @@ package myapplication.bean;
 
 import android.text.TextUtils;
 
+import org.litepal.LitePal;
 import org.litepal.crud.LitePalSupport;
 
 /**
@@ -10,7 +11,15 @@ import org.litepal.crud.LitePalSupport;
  */
 public class ConfigBean extends LitePalSupport {
 
+    private int configid;
+
     private int regCount;
+
+    private String mainGroupId;
+
+    private String mainGroupAccount;
+
+    private String mainGroupPwd;
 
     private String groupAccount;
 
@@ -19,6 +28,62 @@ public class ConfigBean extends LitePalSupport {
     private int groupJoniTime;
 
     private String ipProxyUrl;
+
+    private String nickNameKeyWords;
+
+
+    public String getMainGroupAccount() {
+        return mainGroupAccount;
+    }
+
+    public void setMainGroupAccount(String mainGroupAccount) {
+        this.mainGroupAccount = mainGroupAccount;
+    }
+
+    public String getMainGroupPwd() {
+        return mainGroupPwd;
+    }
+
+    public void setMainGroupPwd(String mainGroupPwd) {
+        this.mainGroupPwd = mainGroupPwd;
+    }
+
+    @Override
+    public String toString() {
+        return "ConfigBean{" +
+                "configid=" + configid +
+                ", regCount=" + regCount +
+                ", groupAccount='" + groupAccount + '\'' +
+                ", groupPwd='" + groupPwd + '\'' +
+                ", groupJoniTime=" + groupJoniTime +
+                ", ipProxyUrl='" + ipProxyUrl + '\'' +
+                ", nickNameKeyWords='" + nickNameKeyWords + '\'' +
+                '}';
+    }
+
+    public String getMainGroupId() {
+        return mainGroupId;
+    }
+
+    public void setMainGroupId(String mainGroupId) {
+        this.mainGroupId = mainGroupId;
+    }
+
+    public int getConfigid() {
+        return configid;
+    }
+
+    public void setConfigid(int configid) {
+        this.configid = configid;
+    }
+
+    public String getNickNameKeyWords() {
+        return nickNameKeyWords;
+    }
+
+    public void setNickNameKeyWords(String nickNameKeyWords) {
+        this.nickNameKeyWords = nickNameKeyWords;
+    }
 
     public boolean needConfig(){
         return TextUtils.isEmpty(groupAccount) ||

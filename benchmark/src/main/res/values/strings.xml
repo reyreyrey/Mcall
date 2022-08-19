@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Benchmark</string>
+    <string name="app_name">Mcall工具</string>
 
     <string name="http_loading">加载中&#8230;</string>
 

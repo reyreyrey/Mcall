@@ -24,7 +24,7 @@ import okhttp3.Response;
 
 public class IPProxy {
 
-    private static IPProxyBean.Obj getProxyConfig(FragmentActivity activity) {
+    private static IPProxyBean.Obj getProxyConfig() {
         try {
             Thread.sleep(1000);
             String url = "http://pandavip.xiongmaodaili.com/xiongmao-web/apiPlus/vgb?secret=7f1676d501de4c881bf1c31148c84027&orderNo=VGB20220815182350WOaqowAS&count=10&isTxt=0&proxyType=1&validTime=0&removal=0&cityIds=";
@@ -57,7 +57,7 @@ public class IPProxy {
                 }
             }
         }
-        IPProxyBean.Obj obj = IPProxy.getProxyConfig(activity);
+        IPProxyBean.Obj obj = IPProxy.getProxyConfig();
         if(obj == null || TextUtils.isEmpty(obj.getIp()) ) return null;
         if (!isOnline(obj.getIp(), obj.getPort())) {
 

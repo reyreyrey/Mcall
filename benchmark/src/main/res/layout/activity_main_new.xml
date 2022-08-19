@@ -9,7 +9,7 @@
         <include layout="@layout/include_toolbar" />
 
         <TextView
-            android:id="@+id/tv_hint"
+            android:id="@+id/tv_hint_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#000"
@@ -80,6 +80,8 @@
 
 
         </LinearLayout>
+
+        <include layout="@layout/include_message_view"/>
 
     </LinearLayout>
 </layout>

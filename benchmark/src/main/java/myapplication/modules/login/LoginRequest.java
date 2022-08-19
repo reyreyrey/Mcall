@@ -2,6 +2,7 @@ package myapplication.modules.login;
 
 import static myapplication.base.Cons.project_id;
 
+import android.app.Service;
 import android.util.Log;
 
 import androidx.fragment.app.FragmentActivity;
@@ -22,11 +23,14 @@ import myapplication.base.ResultException;
 import myapplication.modules.addFriend.AddFriendApi;
 import myapplication.modules.checkphone.CheckPhoneApi;
 import myapplication.modules.checkphone.CheckPhoneBean;
+import myapplication.modules.friendlist.FriendListApi;
+import myapplication.modules.friendlist.FriendListBean;
 import myapplication.modules.groupJoin.GroupJoniAPi;
 import myapplication.modules.groupList.GroupListApi;
 import myapplication.modules.groupList.GroupListBean;
 import myapplication.modules.groupMemberList.GroupMemberListApi;
 import myapplication.modules.groupMemberList.GroupMemberListBean;
+import myapplication.modules.inviteJoinGroup.InviteJoinGroupApi;
 import myapplication.modules.proxy.IPProxy;
 import myapplication.modules.reg.CheckSmsCodeApi;
 import myapplication.modules.reg.SendSmsApi;
@@ -373,6 +377,52 @@ public class LoginRequest {
                                     .setDeviceId(deviceid)
                             )))
                     .execute(new ResponseClass<HttpData<LoginBean>>() {
+                    }).getData();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 获取好友列表
+     * @param token
+     * @return
+     */
+    public List<FriendListBean> getFriendLists(String token){
+        try {
+
+            return EasyHttp
+                    .post(context)
+                    .api(new FriendListApi()
+                            .setParam(gson.toJson(new FriendListApi.FriendListParams()
+                                    .setToken(token)
+                            )))
+                    .execute(new ResponseClass<HttpData<List<FriendListBean>>>() {
+                    }).getData();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 邀请进群
+     * @param token
+     * @return
+     */
+    public boolean getFriendLists(String token, String ids, String groupId){
+        try {
+
+             EasyHttp
+                    .post(context)
+                    .api(new InviteJoinGroupApi()
+                            .setParam(gson.toJson(new InviteJoinGroupApi.inviteJoinGroupParams()
+                                    .setToken(token)
+                                    .setGroup_id(groupId)
+                                    .setUids(ids)
+                            )))
+                    .execute(new ResponseClass<HttpData<Object>>() {
                     }).getData();
         } catch (Exception e) {
             e.printStackTrace();

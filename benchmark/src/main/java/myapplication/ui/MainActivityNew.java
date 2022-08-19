@@ -23,6 +23,9 @@ import com.hjq.permissions.OnPermissionCallback;
 import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.litepal.LitePal;
 
 import java.text.SimpleDateFormat;
@@ -33,6 +36,7 @@ import java.util.UUID;
 
 import myapplication.NickNameKeyWordsArrayList;
 import myapplication.base.BaseActivity;
+import myapplication.base.BaseMessageActivity;
 import myapplication.base.Cons;
 import myapplication.bean.ConfigBean;
 import myapplication.bean.MemberAddBean;
@@ -44,15 +48,17 @@ import myapplication.modules.proxy.IPProxy;
 import myapplication.modules.proxy.IPProxyBean;
 import myapplication.modules.searchUser.SearchUserBean;
 import myapplication.modules.sms.smsLogin.SmsLoginBean;
+import myapplication.service.TaskService;
 import myapplication.utils.AddFriend;
 import myapplication.utils.Config;
 import myapplication.utils.Log2File;
+import myapplication.utils.LogUtils;
 import pub.devrel.easypermissions.EasyPermissions;
 import tgio.benchmark.R;
 import tgio.benchmark.databinding.ActivityMainNewBinding;
 import tgio.rncryptor.RNCryptorNative;
 
-public class MainActivityNew extends BaseActivity<ActivityMainNewBinding> {
+public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding> {
 
     @Override
     protected String getTitleStr() {
@@ -71,27 +77,34 @@ public class MainActivityNew extends BaseActivity<ActivityMainNewBinding> {
 
     @Override
     protected void init() {
+        EventBus.getDefault().register(this);
         requestPermission();
-        binding.tvHint.setText("加载中...");
+        binding.tvHintMessage.setText("加载中...");
         List<LoginBean> regs = LitePal.findAll(LoginBean.class);
         List<SearchUserBean> searchUserBeansAll = LitePal.findAll(SearchUserBean.class);
         List<SearchUserBean> searchUserBeans = LitePal.where("isAdded = ?", "0").find(SearchUserBean.class);
-        binding.tvHint.setText("已经注册的账号一共" + regs.size() + "个");
-        binding.tvHint.append("\n");
-        binding.tvHint.append("搜索到的用户数量：" + searchUserBeansAll.size() + "个");
-        binding.tvHint.append("\n");
-        binding.tvHint.append("搜索到的用户，但未添加的数量：" + searchUserBeans.size() + "个");
+        binding.tvHintMessage.setText("已经注册的账号一共" + regs.size() + "个");
+        binding.tvHintMessage.append("\n");
+        binding.tvHintMessage.append("搜索到的用户数量：" + searchUserBeansAll.size() + "个");
+        binding.tvHintMessage.append("\n");
+        binding.tvHintMessage.append("搜索到的用户，但未添加的数量：" + searchUserBeans.size() + "个");
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGetMessage(String str){
+        sendTextMessage(str);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        ConfigBean configBean = Config.getConfig();
-        if(configBean.needConfig()){
-            startActivity(new Intent(this, ConfigActivity.class));
-        }
-
         List<MemberAddBean> memberAddBeanList = LitePal.findAll(MemberAddBean.class);
         binding.btnGroupUser.setText("拉取群成员列表,目前共有"+memberAddBeanList.size()+"个群成员已经获取到");
     }
@@ -152,7 +165,7 @@ public class MainActivityNew extends BaseActivity<ActivityMainNewBinding> {
     }
 
     public void joinGroupTask(View v){
-
+        startService(new Intent(this, TaskService.class));
     }
 
     void toast(String msg) {

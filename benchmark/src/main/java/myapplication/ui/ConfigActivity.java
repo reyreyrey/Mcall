@@ -9,6 +9,8 @@ import org.litepal.LitePal;
 
 import myapplication.base.BaseActivity;
 import myapplication.bean.ConfigBean;
+import myapplication.utils.Config;
+import myapplication.utils.LogUtils;
 import tgio.benchmark.R;
 import tgio.benchmark.databinding.ActivityConfigBinding;
 
@@ -18,6 +20,8 @@ import tgio.benchmark.databinding.ActivityConfigBinding;
  */
 public class ConfigActivity extends BaseActivity<ActivityConfigBinding> {
     private ConfigBean configBean;
+    String  keywords =
+            "财务,cw,CW,ZB,zb,主持,管理,机器人,亚泰,招财猫,财财,客服";
 
     @Override
     protected String getTitleStr() {
@@ -31,9 +35,16 @@ public class ConfigActivity extends BaseActivity<ActivityConfigBinding> {
 
     @Override
     protected void init() {
-        configBean = LitePal.findFirst(ConfigBean.class);
-        if (configBean == null) configBean = new ConfigBean();
+        configBean = Config.getConfig();
+        LogUtils.e("---->", configBean.toString());
+//
         binding.edtRegNum.setText(configBean.getRegCount() + "");
+        binding.edtGroupAccount.setText(configBean.getGroupAccount());
+        binding.edtGroupPwd.setText(configBean.getGroupPwd());
+        binding.edtGroupJoniTime.setText(configBean.getGroupJoniTime()+"");
+        binding.edtIpProxyUrl.setText(configBean.getIpProxyUrl());
+        binding.edtNicknameKeyword.setText(configBean.getNickNameKeyWords());
+        binding.edtGroupId.setText(configBean.getMainGroupId());
     }
 
     public void save(View v) {
@@ -54,15 +65,23 @@ public class ConfigActivity extends BaseActivity<ActivityConfigBinding> {
             new AlertDialog.Builder(context).setMessage("请配置有群的账号密码！！！").setNegativeButton("确定",null).create().show();
             return;
         }
-        LitePal.deleteAll(ConfigBean.class);
         String regNum = binding.edtRegNum.getText().toString().trim();
+        String keyWords = binding.edtNicknameKeyword.getText().toString().trim();
+        String mainGroupID = binding.edtGroupId.getText().toString().trim();
+        String mainGroupAccount = binding.edtMainGroupAccount.getText().toString().trim();
+        String mainGroupPwd = binding.edtMainGroupPwd.getText().toString().trim();
         configBean.setRegCount(Integer.parseInt(regNum));
+        configBean.setConfigid(1);
+        configBean.setMainGroupAccount(mainGroupAccount);
+        configBean.setMainGroupPwd(mainGroupPwd);
+        configBean.setMainGroupId(mainGroupID);
+        configBean.setNickNameKeyWords(keyWords);
         configBean.setGroupAccount(groupAccount);
         configBean.setGroupJoniTime(groupJoniTime);
         configBean.setGroupPwd(groupPwd);
         configBean.setIpProxyUrl(ipProxyUrl);
-        configBean.save();
-        Toast.makeText(this, "保存成功", Toast.LENGTH_LONG).show();
-        finish();
+        boolean flag = configBean.save();
+        Toast.makeText(this, flag?"保存成功":"保存失败", Toast.LENGTH_LONG).show();
+        if(flag)finish();
     }
 }

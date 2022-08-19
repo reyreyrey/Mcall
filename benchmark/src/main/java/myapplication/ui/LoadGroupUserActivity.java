@@ -7,6 +7,7 @@ import org.litepal.LitePal;
 import java.util.ArrayList;
 import java.util.List;
 
+import myapplication.NickNameKeyWordsArrayList;
 import myapplication.base.BaseActivity;
 import myapplication.base.BaseMessageActivity;
 import myapplication.base.Cons;
@@ -27,7 +28,7 @@ import tgio.benchmark.databinding.ActivityLoadGroupUserBinding;
  */
 public class LoadGroupUserActivity extends BaseMessageActivity<ActivityLoadGroupUserBinding> {
     private LoginRequest request;
-    private List<GroupMemberListBean> allMembers;
+    private NickNameKeyWordsArrayList allMembers;
     private int count;
     private boolean isRun = false;
     @Override
@@ -42,7 +43,7 @@ public class LoadGroupUserActivity extends BaseMessageActivity<ActivityLoadGroup
 
     @Override
     protected void init() {
-        allMembers = new ArrayList<>();
+        allMembers = new NickNameKeyWordsArrayList();;
         request = new LoginRequest(this);
         List<MemberAddBean> memberAddBeanList = LitePal.findAll(MemberAddBean.class);
         count = memberAddBeanList.size();

@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface Cons {
+    /**
+     * 用户名andro
+     * 密码abc1650@
+     */
 
     String main_account_name = "aazz1234";
     String main_account_pwd = "dong7513bo@@";
