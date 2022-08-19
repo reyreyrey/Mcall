@@ -50,16 +50,16 @@ public class TaskWorker extends TimerTask {
             EventBus.getDefault().post("请配置主群id");
             return;
         }
-        EventBus.getDefault().post("设置代理");
-        IPProxy.setProxy(null);
-        EventBus.getDefault().post("代理设置成功");
-        EventBus.getDefault().post("开始登录主群群主的账号");
-        LoginBean mainGroupLoginBean = loginRequest.login(configBean.getMainGroupAccount(), configBean.getMainGroupPwd(), null,null);
-        if(mainGroupLoginBean == null){
-            EventBus.getDefault().post("登录主群群主的账号失败");
-            return;
-        }
-        EventBus.getDefault().post("登录主群群主的账号成功");
+//        EventBus.getDefault().post("设置代理");
+//        IPProxy.setProxy(null);
+//        EventBus.getDefault().post("代理设置成功");
+//        EventBus.getDefault().post("开始登录主群群主的账号");
+//        LoginBean mainGroupLoginBean = loginRequest.login(configBean.getMainGroupAccount(), configBean.getMainGroupPwd(), null,null);
+//        if(mainGroupLoginBean == null){
+//            EventBus.getDefault().post("登录主群群主的账号失败");
+//            return;
+//        }
+//        EventBus.getDefault().post("登录主群群主的账号成功");
         EventBus.getDefault().post("开始获取所有的注册用户");
         List<LoginBean> regs = LitePal.findAll(LoginBean.class);
         EventBus.getDefault().post("注册用户一共有："+regs.size()+"个");

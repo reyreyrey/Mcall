@@ -168,6 +168,12 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
         startService(new Intent(this, TaskService.class));
     }
 
+    public void joni_group_manager(View v){
+        List<LoginBean> regs = LitePal.findAll(LoginBean.class);
+        LoginBean loginBean = regs.get(0);
+
+    }
+
     void toast(String msg) {
         Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
     }

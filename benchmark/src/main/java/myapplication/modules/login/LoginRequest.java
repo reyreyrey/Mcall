@@ -427,6 +427,6 @@ public class LoginRequest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return true;
     }
 }
