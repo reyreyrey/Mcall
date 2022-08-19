@@ -58,5 +58,28 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_group_user"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="拉取群成员列表"
+                android:onClick="loadGroupUser"/>
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="开启拉人进群定时任务"
+                android:onClick="joinGroupTask"/>
+
+
+        </LinearLayout>
+
     </LinearLayout>
 </layout>

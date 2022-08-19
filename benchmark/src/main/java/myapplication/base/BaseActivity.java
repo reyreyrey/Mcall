@@ -35,6 +35,8 @@ public abstract class BaseActivity<T extends ViewDataBinding> extends AppCompatA
         init();
     }
 
+
+
     protected boolean showBack() {
         return true;
     }

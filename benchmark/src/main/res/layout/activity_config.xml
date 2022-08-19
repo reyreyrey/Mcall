@@ -19,6 +19,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:layout_marginTop="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="8dp"
@@ -36,6 +37,96 @@
                         android:inputType="number"
                         android:id="@+id/edt_reg_num"
                         android:hint="请输入单次注册数量"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:text="拉取群成员的账号"
+                        android:textColor="#333333"
+                        android:textSize="16dp" />
+
+                    <EditText
+                        android:background="@null"
+                        android:id="@+id/edt_group_account"
+                        android:hint="请输入拉取群成员的账号"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:text="拉取群成员的密码"
+                        android:textColor="#333333"
+                        android:textSize="16dp" />
+
+                    <EditText
+                        android:background="@null"
+                        android:id="@+id/edt_group_pwd"
+                        android:hint="请输入拉取群成员的密码"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:text="定时拉取好友时长"
+                        android:textColor="#333333"
+                        android:textSize="16dp" />
+
+                    <EditText
+                        android:background="@null"
+                        android:inputType="number"
+                        android:id="@+id/edt_group_joni_time"
+                        android:hint="请输入定时拉取好友时长(分钟)"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:text="IP代理链接"
+                        android:textColor="#333333"
+                        android:textSize="16dp" />
+
+                    <EditText
+                        android:background="@null"
+                        android:inputType="number"
+                        android:id="@+id/edt_ip_proxy_url"
+                        android:hint="请输入IP代理链接"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                 </LinearLayout>

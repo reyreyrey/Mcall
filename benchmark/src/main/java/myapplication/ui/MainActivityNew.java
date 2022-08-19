@@ -34,6 +34,7 @@ import java.util.UUID;
 import myapplication.NickNameKeyWordsArrayList;
 import myapplication.base.BaseActivity;
 import myapplication.base.Cons;
+import myapplication.bean.ConfigBean;
 import myapplication.bean.MemberAddBean;
 import myapplication.modules.groupList.GroupListBean;
 import myapplication.modules.groupMemberList.GroupMemberListBean;
@@ -44,6 +45,7 @@ import myapplication.modules.proxy.IPProxyBean;
 import myapplication.modules.searchUser.SearchUserBean;
 import myapplication.modules.sms.smsLogin.SmsLoginBean;
 import myapplication.utils.AddFriend;
+import myapplication.utils.Config;
 import myapplication.utils.Log2File;
 import pub.devrel.easypermissions.EasyPermissions;
 import tgio.benchmark.R;
@@ -79,7 +81,21 @@ public class MainActivityNew extends BaseActivity<ActivityMainNewBinding> {
         binding.tvHint.append("搜索到的用户数量：" + searchUserBeansAll.size() + "个");
         binding.tvHint.append("\n");
         binding.tvHint.append("搜索到的用户，但未添加的数量：" + searchUserBeans.size() + "个");
+
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ConfigBean configBean = Config.getConfig();
+        if(configBean.needConfig()){
+            startActivity(new Intent(this, ConfigActivity.class));
+        }
+
+        List<MemberAddBean> memberAddBeanList = LitePal.findAll(MemberAddBean.class);
+        binding.btnGroupUser.setText("拉取群成员列表,目前共有"+memberAddBeanList.size()+"个群成员已经获取到");
+    }
+
 
     private void requestPermission() {
         XXPermissions.with(this)
@@ -128,6 +144,14 @@ public class MainActivityNew extends BaseActivity<ActivityMainNewBinding> {
     }
 
     public void addFriend(View v){
+        startActivity(new Intent(this, AddFriendActivity.class));
+    }
+
+    public void loadGroupUser(){
+        startActivity(new Intent(this, LoadGroupUserActivity.class));
+    }
+
+    public void joinGroupTask(View v){
 
     }
 

@@ -19,6 +19,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 import myapplication.base.BaseActivity;
+import myapplication.base.BaseMessageActivity;
 import myapplication.base.Cons;
 import myapplication.modules.login.LoginBean;
 import myapplication.modules.login.LoginRequest;
@@ -34,42 +35,11 @@ import tgio.benchmark.databinding.ActivityRegBinding;
  * @作者 ：guocongcong
  * @日期：2022.08.16 14:03
  */
-public class RegActivity extends BaseActivity<ActivityRegBinding> {
+public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
     private boolean isStart = false;
     private LoginRequest request;
     private SmsLoginBean smsLoginBean;
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case 1:
-                    String text = (String) msg.obj;
-                    binding.tvHint.append(text);
-                    binding.scrollview.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                        @Override
-                        public void onGlobalLayout() {
-                            binding.scrollview.post(new Runnable() {
-                                public void run() {
-                                    binding.scrollview.fullScroll(View.FOCUS_DOWN);
-                                }
-                            });
-                        }
-                    });
-                    break;
-                case 2:
-                    String showDialogMsg = (String) msg.obj;
-                    new AlertDialog.Builder(context).setMessage(showDialogMsg).setNegativeButton("确定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            finish();
-                        }
-                    }).create().show();
-                    break;
-            }
-        }
-    };
+
 
     @Override
     protected String getTitleStr() {
@@ -232,18 +202,5 @@ public class RegActivity extends BaseActivity<ActivityRegBinding> {
 
     }
 
-    void sendTextMessage(String msg) {
-        Message message = Message.obtain();
-        message.what = 1;
-        message.obj = msg + "\n";
-        Log2File.w(msg + "\n");
-        handler.sendMessage(message);
-    }
 
-    void sendDialogMessage(String msg) {
-        Message message = Message.obtain();
-        message.what = 2;
-        message.obj = msg + "\n";
-        handler.sendMessage(message);
-    }
 }

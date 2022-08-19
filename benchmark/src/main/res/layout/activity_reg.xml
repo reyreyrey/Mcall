@@ -28,18 +28,7 @@
                 android:text="停止注册" />
         </LinearLayout>
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/scrollview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        <TextView
-            android:id="@+id/tv_hint"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="6dp"
-            android:textColor="#333333"
-            android:textSize="15dp" />
-        </androidx.core.widget.NestedScrollView>
+        <include layout="@layout/include_message_view"/>
 
     </LinearLayout>
 </layout>
