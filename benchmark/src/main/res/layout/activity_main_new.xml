@@ -81,6 +81,7 @@
 
         </LinearLayout>
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -90,8 +91,37 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="使用注册的一个用户进主群（需要群主手动设置管理员给这个用户）"
-                android:onClick="joni_group_manager"/>
+                android:text="根据userid的顺序获取用户"
+                android:onClick="searchUserById"/>
+
+            <Button
+                android:id="@+id/btn_group_ower"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="登录群主账号"
+                android:onClick="loginGroupOwerAccount"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="使用注册的账号添加群主好友"
+                android:onClick="addOwerFriend"/>
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="登录有群的账号（只需要登录一次就行）"
+                android:onClick="loginNeedLoadGroupUserAccount"/>
 
 
 

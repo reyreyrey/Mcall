@@ -1,5 +1,6 @@
 package myapplication.base;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -17,7 +18,7 @@ import tgio.benchmark.R;
  * @日期：2022.08.16 14:12
  */
 public abstract class BaseActivity<T extends ViewDataBinding> extends AppCompatActivity {
-
+    protected ProgressDialog dialog;
     protected Toolbar toolbar;
     protected T binding;
     protected FragmentActivity context;
@@ -32,6 +33,8 @@ public abstract class BaseActivity<T extends ViewDataBinding> extends AppCompatA
         toolbar.setTitle(getTitleStr());
         toolbar.setNavigationIcon(showBack() ? getResources().getDrawable(R.mipmap.back) : null);
         toolbar.setNavigationOnClickListener(v -> finish());
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("loading....");
         init();
     }
 

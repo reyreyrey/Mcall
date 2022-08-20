@@ -2,6 +2,7 @@ package myapplication.utils;
 
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
 import org.litepal.LitePal;
 
 import java.text.ParseException;
@@ -18,13 +19,16 @@ public class GetAllUserList {
 
     public static void getAllUser(LoginRequest request, String currentToken) {
         SearchUserBean last = LitePal.findLast(SearchUserBean.class);
-        int last_userid = 1001;
+        int last_userid = Config.getConfig().getSearchLastUserId();
         if (last != null) {
+            Log.e("---->", "->null");
             last_userid = last.getUserid();
         }
-
-        for (int id = last_userid; id < last_userid + 2000; id++) {
+        EventBus.getDefault().post("clear");
+        int count = Config.getConfig().getSearchLastUserCount();
+        for (int id = last_userid; id < last_userid + count; id++) {
             Log.e("---->", "->开始获取列表+"+id);
+            EventBus.getDefault().post("开始获取列表"+id);
             SearchUserBean searchUserBean = request.getUserByID(id + "", currentToken);
             if (searchUserBean == null) continue;
 //            Date date = new Date(searchUserBean.getLast_login_time()*1000);
@@ -34,9 +38,11 @@ public class GetAllUserList {
 //            }
 
             boolean f = searchUserBean.save();
+            EventBus.getDefault().post(f ? searchUserBean.getNickname() + "->已经添加进数据库" : searchUserBean.getNickname() + "添加失败");
             Log.e("---->", f ? searchUserBean.getNickname() + "->已经添加进数据库" : searchUserBean.getNickname() + "添加失败");
         }
 //        LitePal.saveAll(list);
+        EventBus.getDefault().post("结束");
     }
 
     public static Date getThreeDaysAgoDate() {

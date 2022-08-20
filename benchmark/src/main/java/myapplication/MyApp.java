@@ -30,6 +30,7 @@ import myapplication.base.RequestHandler;
 import myapplication.base.RequestServer;
 import myapplication.base.UAIntercept;
 import myapplication.bean.ConfigBean;
+import myapplication.modules.searchUser.SearchUserBean;
 import myapplication.utils.Config;
 import okhttp3.Cookie;
 import okhttp3.HttpUrl;
@@ -108,8 +109,11 @@ public class MyApp extends MultiDexApplication implements Application.ActivityLi
             configBean.setGroupJoniTime(30);
             configBean.setNickNameKeyWords(keywords);
             configBean.setConfigid(1);
+            configBean.setSearchLastUserId(1001);
+            configBean.setSearchLastUserCount(1000);
             configBean.save();
         }
+
 
     }
 

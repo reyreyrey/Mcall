@@ -45,7 +45,7 @@ public class TaskService extends Service {
         super.onCreate();
 
         taskRunTimeMinutes = Config.getConfig().getGroupJoniTime();
-        taskRunTimeS = taskRunTimeMinutes * 60 ;
+        taskRunTimeS = taskRunTimeMinutes * 60 * 1000 ;
     }
 
     @Override

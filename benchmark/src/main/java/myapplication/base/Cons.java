@@ -24,9 +24,15 @@ public interface Cons {
      String clientId = "6DAAA90A-BDF9-4605-B22A-7DF11B1FCEE9";
     String deviceId = "3D12B822-1D0F-4C78-B61A-984B58D37C22";
 
+    String main_clientId = "6DAAA91A-BDF9-4605-B56A-7DF11B1FCEE9";
+    String main_deviceId = "3D12B889-1D0F-4C78-B61A-945B58D37C22";
+
     String project_id = "23693";
 
     String sms_username = "666888aa";
     String sms_password = "a666888aa";
 
+
+    String main_group_deviceId = "9F14B889-1D0F-4C78-B61A-9456H8D37C22";
+    String main_group_clientId = "5FGHT91A-8HF9-4605-B56A-7DF09B1FCEE9";
 }

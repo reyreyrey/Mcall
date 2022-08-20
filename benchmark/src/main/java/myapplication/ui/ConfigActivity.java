@@ -45,6 +45,10 @@ public class ConfigActivity extends BaseActivity<ActivityConfigBinding> {
         binding.edtIpProxyUrl.setText(configBean.getIpProxyUrl());
         binding.edtNicknameKeyword.setText(configBean.getNickNameKeyWords());
         binding.edtGroupId.setText(configBean.getMainGroupId());
+        binding.edtSearchUserStartId.setText(configBean.getSearchLastUserId()+"");
+        binding.edtMainGroupAccount.setText(configBean.getMainGroupAccount());
+        binding.edtMainGroupPwd.setText(configBean.getMainGroupPwd());
+        binding.edtSearchUserCount.setText(configBean.getSearchLastUserCount()+"");
     }
 
     public void save(View v) {
@@ -59,7 +63,6 @@ public class ConfigActivity extends BaseActivity<ActivityConfigBinding> {
         String ipProxyUrl = binding.edtIpProxyUrl.getText().toString().trim();
         if(ipProxyUrl.equals("")){
             new AlertDialog.Builder(context).setMessage("请配置IP代理，否则有可能被封号！！！").setNegativeButton("确定",null).create().show();
-            return;
         }
         if(groupAccount.equals("") || groupPwd.equals("")){
             new AlertDialog.Builder(context).setMessage("请配置有群的账号密码！！！").setNegativeButton("确定",null).create().show();
@@ -70,6 +73,7 @@ public class ConfigActivity extends BaseActivity<ActivityConfigBinding> {
         String mainGroupID = binding.edtGroupId.getText().toString().trim();
         String mainGroupAccount = binding.edtMainGroupAccount.getText().toString().trim();
         String mainGroupPwd = binding.edtMainGroupPwd.getText().toString().trim();
+
         configBean.setRegCount(Integer.parseInt(regNum));
         configBean.setConfigid(1);
         configBean.setMainGroupAccount(mainGroupAccount);
@@ -80,6 +84,8 @@ public class ConfigActivity extends BaseActivity<ActivityConfigBinding> {
         configBean.setGroupJoniTime(groupJoniTime);
         configBean.setGroupPwd(groupPwd);
         configBean.setIpProxyUrl(ipProxyUrl);
+        configBean.setSearchLastUserId(Integer.parseInt(binding.edtSearchUserStartId.getText().toString().trim()));
+        configBean.setSearchLastUserCount(Integer.parseInt(binding.edtSearchUserCount.getText().toString().trim()));
         boolean flag = configBean.save();
         Toast.makeText(this, flag?"保存成功":"保存失败", Toast.LENGTH_LONG).show();
         if(flag)finish();

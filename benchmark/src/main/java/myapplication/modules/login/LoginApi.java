@@ -31,6 +31,17 @@ public final class LoginApi extends BaseApi {
 
         private String platform = "1";
 
+        public String getCaptcha() {
+            return captcha;
+        }
+
+        public LoginRequestParams setCaptcha(String captcha) {
+            this.captcha = captcha;
+            return this;
+        }
+
+        private String captcha;
+
         public String getPassword() {
             return this.password;
         }

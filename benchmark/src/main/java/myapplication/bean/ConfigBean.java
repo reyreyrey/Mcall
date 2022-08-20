@@ -11,6 +11,8 @@ import org.litepal.crud.LitePalSupport;
  */
 public class ConfigBean extends LitePalSupport {
 
+    private int searchLastUserId;
+    private int searchLastUserCount;
     private int configid;
 
     private int regCount;
@@ -32,6 +34,14 @@ public class ConfigBean extends LitePalSupport {
     private String nickNameKeyWords;
 
 
+    public int getSearchLastUserCount() {
+        return searchLastUserCount;
+    }
+
+    public void setSearchLastUserCount(int searchLastUserCount) {
+        this.searchLastUserCount = searchLastUserCount;
+    }
+
     public String getMainGroupAccount() {
         return mainGroupAccount;
     }
@@ -46,6 +56,14 @@ public class ConfigBean extends LitePalSupport {
 
     public void setMainGroupPwd(String mainGroupPwd) {
         this.mainGroupPwd = mainGroupPwd;
+    }
+
+    public int getSearchLastUserId() {
+        return searchLastUserId;
+    }
+
+    public void setSearchLastUserId(int searchLastUserId) {
+        this.searchLastUserId = searchLastUserId;
     }
 
     @Override

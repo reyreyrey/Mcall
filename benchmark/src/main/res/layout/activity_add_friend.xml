@@ -10,16 +10,21 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
 
             <androidx.appcompat.widget.AppCompatButton
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="add"
-                android:text="添加好友" />
+                android:onClick="addGroup"
+                android:text="添加好友(添加群成员)" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="addSearch"
+                android:text="添加好友（添加根据id获取到的用户）" />
 
             <include layout="@layout/include_message_view"/>
         </LinearLayout>

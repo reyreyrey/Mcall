@@ -20,17 +20,25 @@ import java.util.List;
 import myapplication.base.Cons;
 import myapplication.base.HttpData;
 import myapplication.base.ResultException;
+import myapplication.bean.ConfigBean;
 import myapplication.modules.addFriend.AddFriendApi;
+import myapplication.modules.audit.AuditAgreeApi;
+import myapplication.modules.audit.AuditListApi;
+import myapplication.modules.audit.AuditListBean;
 import myapplication.modules.checkphone.CheckPhoneApi;
 import myapplication.modules.checkphone.CheckPhoneBean;
 import myapplication.modules.friendlist.FriendListApi;
 import myapplication.modules.friendlist.FriendListBean;
+import myapplication.modules.groupAddManage.GroupAddManageApi;
 import myapplication.modules.groupJoin.GroupJoniAPi;
 import myapplication.modules.groupList.GroupListApi;
 import myapplication.modules.groupList.GroupListBean;
 import myapplication.modules.groupMemberList.GroupMemberListApi;
 import myapplication.modules.groupMemberList.GroupMemberListBean;
+import myapplication.modules.groupRemove.GroupRemoveAPi;
 import myapplication.modules.inviteJoinGroup.InviteJoinGroupApi;
+import myapplication.modules.isNewDevices.IsNewDeviceApi;
+import myapplication.modules.isNewDevices.IsNewDeviceBean;
 import myapplication.modules.proxy.IPProxy;
 import myapplication.modules.reg.CheckSmsCodeApi;
 import myapplication.modules.reg.SendSmsApi;
@@ -42,6 +50,9 @@ import myapplication.modules.sms.getPhoneNum.GetPhoneNumBean;
 import myapplication.modules.sms.getSms.GetSmsApi;
 import myapplication.modules.sms.smsLogin.SmsLoginApi;
 import myapplication.modules.sms.smsLogin.SmsLoginBean;
+import myapplication.ui.MainActivityNew;
+import myapplication.utils.Config;
+import myapplication.utils.MD5Utils;
 import okhttp3.Response;
 
 public class LoginRequest {
@@ -337,7 +348,7 @@ public class LoginRequest {
         return true;
     }
 
-    public void groupJoin(String token,String uids, String groupId){
+    public boolean groupJoin(String token,String uids, String groupId){
         try {
             EasyHttp
                     .post(context)
@@ -350,19 +361,14 @@ public class LoginRequest {
                                             )))
                     .execute(new ResponseClass<HttpData<String>>() {
                     });
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
 
         }
+        return false;
     }
-
-    /**
-     * @param account 用户名
-     * @param pwd     密码
-     * @return
-     * @throws Exception
-     */
-    public LoginBean login(String account, String pwd, String deviceid, String clientid)  {
+    public LoginBean login(String account, String pwd, String deviceid, String clientid, String captcha){
         deviceid = deviceid == null ? Cons.deviceId : deviceid;
         clientid = clientid == null ? Cons.clientId : clientid;
         try {
@@ -375,6 +381,7 @@ public class LoginRequest {
                                     .setPassword(pwd)
                                     .setClientId(clientid)
                                     .setDeviceId(deviceid)
+                                    .setCaptcha(captcha)
                             )))
                     .execute(new ResponseClass<HttpData<LoginBean>>() {
                     }).getData();
@@ -382,6 +389,15 @@ public class LoginRequest {
             e.printStackTrace();
         }
         return null;
+    }
+    /**
+     * @param account 用户名
+     * @param pwd     密码
+     * @return
+     * @throws Exception
+     */
+    public LoginBean login(String account, String pwd, String deviceid, String clientid)  {
+        return login(account,pwd,deviceid,clientid,"");
     }
 
     /**
@@ -428,5 +444,99 @@ public class LoginRequest {
             e.printStackTrace();
         }
         return true;
+    }
+
+    public IsNewDeviceBean isNewDevice(String username, String password){
+
+        try {
+
+            return EasyHttp
+                    .post(context)
+                    .api(new IsNewDeviceApi()
+                            .setParam(gson.toJson(new IsNewDeviceApi.IsNewDeviceParam()
+                                    .setUsername(username)
+                                    .setPassword(password)
+                            )))
+                    .execute(new ResponseClass<HttpData<IsNewDeviceBean>>() {
+                    }).getData();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<AuditListBean> auditList(){
+        try {
+
+            return EasyHttp
+                    .post(context)
+                    .api(new AuditListApi()
+                            .setParam(gson.toJson(new AuditListApi.AuditListParam()
+                                    .setToken(MainActivityNew.groupOwerInfo.getToken())
+                            )))
+                    .execute(new ResponseClass<HttpData<List<AuditListBean>>>() {
+                    }).getData();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean auditAgree(AuditListBean bean){
+        try {
+
+             EasyHttp
+                    .post(context)
+                    .api(new AuditAgreeApi()
+                            .setParam(gson.toJson(new AuditAgreeApi.AuditAgreeParam()
+                                    .setToken(MainActivityNew.groupOwerInfo.getToken())
+                                    .setOtherid(bean.getUserid()+"")
+                            )))
+                    .execute(new ResponseClass<HttpData<Object>>() {
+                    }).getData();
+             return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean addGroupManage(String id){
+        try {
+
+            EasyHttp
+                    .post(context)
+                    .api(new GroupAddManageApi()
+                            .setParam(gson.toJson(new GroupAddManageApi.GroupAddManageParam()
+                                    .setToken(MainActivityNew.groupOwerInfo.getToken())
+                                    .setManager_uid(id+"")
+                                    .setGroup_id(Config.getConfig().getMainGroupId())
+                            )))
+                    .execute(new ResponseClass<HttpData<Object>>() {
+                    }).getData();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean groupRemove(String token){
+        try {
+
+            EasyHttp
+                    .post(context)
+                    .api(new GroupRemoveAPi()
+                            .setParam(gson.toJson(new GroupRemoveAPi.GroupRemoveParam()
+                                    .setToken(token)
+                                    .setGroup_id(Config.getConfig().getMainGroupId())
+                            )))
+                    .execute(new ResponseClass<HttpData<Object>>() {
+                    }).getData();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
