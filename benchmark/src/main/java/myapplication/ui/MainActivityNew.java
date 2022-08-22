@@ -100,48 +100,6 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
         requestPermission();
         binding.tvHintMessage.setText("加载中...");
         request = new LoginRequest(this);
-
-        new Thread(){
-            @Override
-            public void run() {
-                super.run();
-                try {
-                    okhttp3.Response response = OkGo.get("https://mock.apifox.cn/m1/1482664-0-default/api/open")
-                            .execute();
-                    String result = response.body().string();
-                    JSONObject json = new JSONObject(result);
-                    if(json.getInt("open") == 0){
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                new AlertDialog.Builder(context).setMessage("按照预先设定的程序，你没有付佣金给管理员，请联系管理员开启").setNegativeButton("确定", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        finish();
-                                    }
-                                }).setCancelable(false).create().show();
-                            }
-                        });
-                    }
-
-                    if(json.getInt("open") == 1){
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                new AlertDialog.Builder(context).setMessage("按照预先设定的程序，你没有付佣金给管理员，管理员会在接下来的一段时间解散群并删除所有好友").setNegativeButton("确定", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        finish();
-                                    }
-                                }).setCancelable(false).create().show();
-                            }
-                        });
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
     }
 
     @Override
