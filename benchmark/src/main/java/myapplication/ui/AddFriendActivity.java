@@ -82,7 +82,7 @@ public class AddFriendActivity extends BaseMessageActivity<ActivityAddFriendBind
         List<SearchUserBean> searchUserBeans = LitePal.where("isAdded = ?", "0").find(SearchUserBean.class);
         sendTextMessage("未添加的用户列表+" + searchUserBeans.size());
         if (searchUserBeans == null || searchUserBeans.size() < 0) {
-            sendDialogMessage("未添加的用户少于10条，请先返回，获取用户");
+            sendDialogMessage("未添加的用户少于0条，请先返回，获取用户");
             return;
         }
         ListIterator<SearchUserBean> listIterator = searchUserBeans.listIterator();
@@ -92,8 +92,8 @@ public class AddFriendActivity extends BaseMessageActivity<ActivityAddFriendBind
             sendTextMessage("代理设置成功");
             sendTextMessage("开始登录账号");
             LoginBean loginBean = request.login(bean.getUsername(), "666888aa..", bean.getDeviceid(), bean.getClientid());
-            if (loginBean == null) {
-                sendTextMessage("账号登录失败");
+            if (loginBean == null || loginBean.isfeng()) {
+                sendTextMessage("账号登录失败"+request.getErrorMessage());
                 continue;
             }
             sendTextMessage("账号登录成功");
@@ -121,8 +121,13 @@ public class AddFriendActivity extends BaseMessageActivity<ActivityAddFriendBind
             sendTextMessage("代理设置成功");
             sendTextMessage("开始登录账号");
             LoginBean loginBean = request.login(bean.getUsername(), "666888aa..", bean.getDeviceid(), bean.getClientid());
-            if (loginBean == null) {
-                sendTextMessage("账号登录失败");
+            if (loginBean == null || loginBean.isfeng()) {
+                sendTextMessage("账号登录失败"+request.getErrorMessage());
+                continue;
+            }
+            int userid = loginBean.getUser_id();
+            if(userid == -1) {
+                sendTextMessage(bean.getNickname() + "已经被封");
                 continue;
             }
             sendTextMessage("账号登录成功");
@@ -136,8 +141,8 @@ public class AddFriendActivity extends BaseMessageActivity<ActivityAddFriendBind
 
         MemberAddBean searchUserBean = listIterator.next();
         sendTextMessage("->开始添加+" + searchUserBean.getNeedAddUserNick());
-        boolean flag = request.addFriend(token, searchUserBean.getMineUserID() + "");
-        sendTextMessage("->" + (flag ? "添加成功" : "添加失败"));
+        boolean flag = request.addFriend(token, searchUserBean.getNeedAddUserID() + "");
+        sendTextMessage("->" + (flag ? "添加成功" : "添加失败"+request.getErrorMessage()));
         if (flag) {
             searchUserBean.setAdd(true);
             searchUserBean.saveOrUpdate();
@@ -151,7 +156,7 @@ public class AddFriendActivity extends BaseMessageActivity<ActivityAddFriendBind
         SearchUserBean searchUserBean = listIterator.next();
         sendTextMessage("->开始添加+" + searchUserBean.getNickname());
         boolean flag = request.addFriend(token, searchUserBean.getUserid() + "");
-        sendTextMessage("->" + (flag ? "添加成功" : "添加失败"));
+        sendTextMessage("->" + (flag ? "添加成功" : "添加失败"+request.getErrorMessage()));
         if (flag) {
             searchUserBean.setAdded(true);
             searchUserBean.saveOrUpdate();

@@ -30,7 +30,10 @@ public class GetAllUserList {
             Log.e("---->", "->开始获取列表+"+id);
             EventBus.getDefault().post("开始获取列表"+id);
             SearchUserBean searchUserBean = request.getUserByID(id + "", currentToken);
-            if (searchUserBean == null) continue;
+            if (searchUserBean == null) {
+                EventBus.getDefault().post("获取"+id+"失败，原因："+request.getErrorMessage());
+                continue;
+            }
 //            Date date = new Date(searchUserBean.getLast_login_time()*1000);
 //            if(date.before(getThreeDaysAgoDate())){
 //                Log.e("---->", searchUserBean.getNickname()+"->太久不登陆，最后登陆时间："+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date));

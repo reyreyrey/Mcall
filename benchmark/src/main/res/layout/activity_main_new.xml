@@ -34,13 +34,25 @@
                 android:onClick="regAccount"
                 android:text="注册账号" />
 
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="includeAccount"
+                android:text="导入账号" />
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="检测账号状态"
+                android:onClick="checkAccountStatus"/>
             <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -99,7 +111,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="登录群主账号"
+                android:text="登录群主账号（每次启动都要登录）"
                 android:onClick="loginGroupOwerAccount"/>
 
         </LinearLayout>
@@ -117,10 +129,11 @@
                 android:onClick="addOwerFriend"/>
 
             <Button
+                android:id="@+id/btn_group_loader"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="登录有群的账号（只需要登录一次就行）"
+                android:text="登录有群的账号（每次启动都要登录）"
                 android:onClick="loginNeedLoadGroupUserAccount"/>
 
 

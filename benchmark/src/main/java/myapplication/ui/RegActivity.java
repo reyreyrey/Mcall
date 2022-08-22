@@ -1,5 +1,7 @@
 package myapplication.ui;
 
+import static myapplication.utils.RandomUtil.getRandomString;
+
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
@@ -13,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import org.litepal.LitePal;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -28,6 +31,7 @@ import myapplication.modules.proxy.IPProxyBean;
 import myapplication.modules.sms.smsLogin.SmsLoginBean;
 import myapplication.utils.Config;
 import myapplication.utils.Log2File;
+import myapplication.utils.RandomUtil;
 import tgio.benchmark.R;
 import tgio.benchmark.databinding.ActivityRegBinding;
 
@@ -80,7 +84,7 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                 sendTextMessage("开始登陆接码平台");
                 smsLoginBean = request.smsLogin();
                 if (smsLoginBean == null) {
-                    sendTextMessage("接码平台登陆失败");
+                    sendTextMessage("接码平台登陆失败"+request.getErrorMessage());
                     return;
                 }
 
@@ -97,7 +101,6 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                     if(!isStart)return;
                     sendTextMessage("开始设置代理");
                     IPProxyBean.Obj obj = IPProxy.setProxy(context);
-                    if(obj == null)continue;
 
                     sendTextMessage("代理设置成功IP：" + obj.getIp() + ",端口：" + obj.getPort());
 
@@ -113,19 +116,19 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                     phoneNum = "86-" + phoneNum;
                     sendTextMessage("获取手机号成功：" + phoneNum);
 
-//                    sendTextMessage("开始检测手机号是否可用");
-//                    boolean b = request.checkPhone("86-" + phoneNum);
-//                    if (b) {
-//                        //号码已经存在了
-//                        sendTextMessage("手机号" + phoneNum + "已经注册过了");
-//                        continue;
-//                    }
+                    sendTextMessage("开始检测手机号是否可用");
+                    boolean b = request.checkPhone("86-" + phoneNum);
+                    if (b) {
+                        //号码已经存在了
+                        sendTextMessage("手机号" + phoneNum + "已经注册过了");
+                        continue;
+                    }
                     sendTextMessage("手机号" + phoneNum + "可以使用，开始发送验证码");
                     //发送验证码
                     boolean success = request.sendSms(phoneNum);
                     if (!success) {
                         //发送失败
-                        sendTextMessage("手机号" + phoneNum + "验证码发送失败");
+                        sendTextMessage("手机号" + phoneNum + "验证码发送失败"+request.getErrorMessage());
                         continue;
                     }
                     sendTextMessage("手机号" + phoneNum + "验证码已经发送，开始等待获取接码平台的验证码");
@@ -147,7 +150,7 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                     }
                     sendTextMessage("验证码获取成功，验证码是：" + code);
                     if (!request.checkSmsCode(phoneNum, code)) {
-                        sendTextMessage("验证码检测失败");
+                        sendTextMessage("验证码检测失败"+request.getErrorMessage());
                         continue;
                     }
                     sendTextMessage("验证码检测成功，开始使用手机号登陆");
@@ -156,9 +159,10 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                     String deviceid = UUID.randomUUID().toString().toUpperCase(Locale.ROOT);
                     LoginBean loginBean = request.loginByPhoneNum(phoneNum, code, clientid, deviceid);
 
-                    String nickname = "nn" + new SimpleDateFormat("ddHHmmss").format(new Date());
-                    String susername = "sn" + new SimpleDateFormat("ddHHmmss").format(new Date());
-                    String username = "u" + new SimpleDateFormat("ddHHmmss").format(new Date());
+                    Calendar calendar = Calendar.getInstance();
+                    String nickname = getRandomString();
+                    String susername = getRandomString();
+                    String username = RandomUtil.getRandomchar1()+RandomUtil.getRandomnum2()+RandomUtil.getRandomchar2()+calendar.get(Calendar.SECOND)+RandomUtil.getRandomchar1();
                     sendTextMessage("手机号登陆成功，开始设置用户名和密码");
                     sendTextMessage("用户名是：" + username);
                     sendTextMessage("密码是：666888aa..");
@@ -166,19 +170,19 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                     //设置用户名
                     boolean b1 = request.setPersonInfo(loginBean.getToken(), phoneNum, nickname, susername);
                     if (!b1) {
-                        sendTextMessage("设置昵称失败");
+                        sendTextMessage("设置昵称失败"+request.getErrorMessage());
                         continue;
                     }
                     sendTextMessage("设置昵称成功");
                     boolean b2 = request.setUserName(loginBean.getToken(), username);
                     if (!b2) {
-                        sendTextMessage("设置用户名失败");
+                        sendTextMessage("设置用户名失败"+request.getErrorMessage());
                         continue;
                     }
                     sendTextMessage("设置用户名成功");
                     boolean b3 = request.setPwd(loginBean.getToken());
                     if (!b3) {
-                        sendTextMessage("设置密码失败");
+                        sendTextMessage("设置密码失败"+request.getErrorMessage());
                         continue;
                     }
                     sendTextMessage("设置密码成功");

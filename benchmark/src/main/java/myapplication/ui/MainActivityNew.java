@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.hjq.http.listener.OnHttpListener;
 import com.hjq.permissions.OnPermissionCallback;
 import com.hjq.permissions.Permission;
@@ -35,6 +36,7 @@ import com.lzy.okgo.model.Response;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.litepal.LitePal;
 
@@ -148,6 +150,48 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
         EventBus.getDefault().unregister(this);
     }
 
+    public void includeAccount(View v){
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                try{
+
+                showProgressDialog();
+                String json = Log2File.getLog();
+                JSONArray jsonArray = new JSONArray(json);
+                LitePal.deleteAll(LoginBean.class);
+                for(int i=0;i<jsonArray.length();i++){
+                    JSONObject object = jsonArray.getJSONObject(i);
+                    object.remove("baseObjId");
+                    LoginBean bean = new GsonBuilder().create().fromJson(object.toString(), LoginBean.class);
+                    LogUtils.e("---->","保存---》"+ bean.save());
+                }
+
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        refresh();
+                    }
+                });
+//
+                sendDialogMessage("导入成功");
+                    LogUtils.e("---->","结束了");
+                }catch (Exception e){
+                    LogUtils.e("---->","Exception->"+e.toString());
+                }
+                dismissProgressDialog();
+            }
+        }.start();
+
+
+    }
+
+    public void checkAccountStatus(View v){
+        startActivity(new Intent(context, CheckAccountStatusActivity.class));
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGetMessage(String str){
         sendTextMessage(str);
@@ -156,6 +200,10 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
     @Override
     protected void onResume() {
         super.onResume();
+        refresh();
+    }
+
+    private void refresh() {
         List<LoginBean> regs = LitePal.findAll(LoginBean.class);
         binding.tvHintMessage.setText("已经注册的账号一共" + regs.size() + "个");
         binding.tvHintMessage.append("\n");
@@ -169,11 +217,19 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
         binding.tvHintMessage.append("搜索到的用户，但未添加的数量：" + searchUserBeans.size() + "个");
 
         if(groupOwerInfo != null){
-            binding.btnGroupOwer.setText("群主账号已经登陆");
+            binding.btnGroupOwer.setText("群主账号已经登陆（每次启动都要登录）");
             binding.btnGroupOwer.setEnabled(false);
         }else{
             binding.btnGroupOwer.setText("登录群主账号");
             binding.btnGroupOwer.setEnabled(true);
+        }
+
+        if(needLoadGroupInfo != null){
+            binding.btnGroupLoader.setText("有群的账号已经登陆");
+            binding.btnGroupLoader.setEnabled(false);
+        }else{
+            binding.btnGroupLoader.setText("登录有群的账号（每次启动都要登录）");
+            binding.btnGroupLoader.setEnabled(true);
         }
     }
 
@@ -260,10 +316,10 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
                 ConfigBean configBean = Config.getConfig();
                 String username = configBean.getMainGroupAccount();
                 String password = MD5Utils.encode(configBean.getMainGroupPwd());
-                IsNewDeviceBean isNewDeviceBean = request.isNewDevice(username, password);
+                IsNewDeviceBean isNewDeviceBean = request.isNewDevice(username, password, Cons.main_deviceId);
                 if(isNewDeviceBean == null){
                     dismissProgressDialog();
-                    sendDialogMessage("主账号登录失败");
+                    sendDialogMessage("主账号登录失败"+request.getErrorMessage());
                     return;
                 }
                 if(isNewDeviceBean.getIsNewDevice() == 1){
@@ -299,7 +355,7 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
                 code);
         if(bean == null){
             dismissProgressDialog();
-            sendDialogMessage("主账号登录失败");
+            sendDialogMessage("主账号登录失败"+request.getErrorMessage());
             return;
         }
         groupOwerInfo = bean;
@@ -317,10 +373,10 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
                 ConfigBean configBean = Config.getConfig();
                 String username = configBean.getGroupAccount();
                 String password = MD5Utils.encode(configBean.getGroupPwd());
-                IsNewDeviceBean isNewDeviceBean = request.isNewDevice(username, password);
+                IsNewDeviceBean isNewDeviceBean = request.isNewDevice(username, password, Cons.main_group_deviceId);
                 if(isNewDeviceBean == null){
                     dismissProgressDialog();
-                    sendDialogMessage("群账号登录失败");
+                    sendDialogMessage("群账号登录失败"+request.getErrorMessage());
                     return;
                 }
                 if(isNewDeviceBean.getIsNewDevice() == 1){
@@ -354,7 +410,7 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
                 code);
         if(bean == null){
             dismissProgressDialog();
-            sendDialogMessage("群账号登录失败");
+            sendDialogMessage("群账号登录失败"+request.getErrorMessage());
             return;
         }
         needLoadGroupInfo = bean;
@@ -363,34 +419,7 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
     }
 
     public void addOwerFriend(View v){
-        new Thread(){
-            @Override
-            public void run() {
-                super.run();
-                showProgressDialog();
-                List<LoginBean> regs = LitePal.findAll(LoginBean.class);
-                for(LoginBean bean : regs){
-                    IPProxy.setProxy(context);
-                    LoginBean loginBean = request.login(bean.getUsername(), "666888aa..", bean.getDeviceid(), bean.getClientid());
-                    if(loginBean == null)continue;
-                    request.addFriend(loginBean.getToken(), groupOwerInfo.getUser_id()+"");
-                }
-                //获取请求列表
-                List<AuditListBean> auditListBeans = request.auditList();
-                if(auditListBeans == null){
-                    dismissProgressDialog();
-                    sendDialogMessage("获取申请列表失败");
-                    return;
-                }
-                //同意添加
-                for(AuditListBean auditListBean : auditListBeans){
-                    request.auditAgree(auditListBean);
-                }
-
-                dismissProgressDialog();
-                sendDialogMessage("添加好友完成");
-            }
-        }.start();
+        startActivity(new Intent(context, AddOwerFriendsActivity.class));
     }
 
     void toast(String msg) {

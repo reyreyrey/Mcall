@@ -1,5 +1,7 @@
 package myapplication.modules.proxy;
 
+import android.text.TextUtils;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -52,6 +54,7 @@ public class IPProxyBean {
             private String ip;
 
             public int getPort() {
+                if(TextUtils.isEmpty(port))return 0;
                 return Integer.parseInt(this.port);
             }
 

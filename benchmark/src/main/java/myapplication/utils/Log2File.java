@@ -3,8 +3,10 @@ package myapplication.utils;
 import android.content.Context;
 import android.os.Environment;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
@@ -16,7 +18,8 @@ import java.util.Date;
 public class Log2File {
 
     private static boolean  logInit;
-    private static BufferedWriter writer;
+    private static BufferedWriter writer, errorwriter;
+    private static BufferedReader reader;
 
     private Log2File()
     {
@@ -48,8 +51,13 @@ public class Log2File {
 
                     File logFile = new File(logDir, fileName);
                     logFile.createNewFile();
+                    File errorfile = new File(logDir, "error.txt");
+                    errorfile.createNewFile();
+
+                    reader = new BufferedReader(new FileReader(logFile));
 
                     writer = new BufferedWriter(new FileWriter(logFile, true));
+                    errorwriter = new BufferedWriter(new FileWriter(errorfile, true));
                     logInit = true;
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
@@ -85,6 +93,33 @@ public class Log2File {
         }
     }
 
+    public static void exception(String msg)
+    {
+        if(logInit)
+        {
+            try {
+                errorwriter.write( msg);
+                errorwriter.newLine();
+                errorwriter.flush();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+            }
+        }
+    }
+
+    public static String getLog(){
+        if(logInit){
+            try{
+                StringBuffer sb = new StringBuffer();
+                String buffer;
+                while((buffer = reader.readLine()) != null){
+                    sb.append(buffer);
+                }
+                return sb.toString();
+            }catch (Exception e){}
+        }
+        return null;
+    }
     /**
      * 关闭log
      */
@@ -95,6 +130,8 @@ public class Log2File {
             try {
                 writer.close();
                 writer = null;
+                reader.close();
+                reader = null;
 
             } catch (IOException e) {
                 // TODO Auto-generated catch block

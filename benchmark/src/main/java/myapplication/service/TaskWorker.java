@@ -63,7 +63,7 @@ public class TaskWorker extends TimerTask {
             EventBus.getDefault().post("开始登录" + loginBean.getNickname());
             LoginBean bean = loginRequest.login(loginBean.getUsername(), "666888aa..", loginBean.getDeviceid(), loginBean.getClientid());
             if (bean == null) {
-                EventBus.getDefault().post(bean.getNickname() + "->登录失败");
+                EventBus.getDefault().post(bean.getNickname() + "->登录失败"+loginRequest.getErrorMessage());
                 continue;
             }
             String token = bean.getToken();
@@ -72,7 +72,7 @@ public class TaskWorker extends TimerTask {
             EventBus.getDefault().post("开始获取" + bean.getNickname() + "的好友列表");
             List<FriendListBean> friendListBeanList = loginRequest.getFriendLists(token);
             if (friendListBeanList == null || friendListBeanList.size() == 0) {
-                EventBus.getDefault().post("获取好友失败，或没有好友");
+                EventBus.getDefault().post("获取好友失败，或没有好友"+loginRequest.getErrorMessage());
                 continue;
             }
             EventBus.getDefault().post("群主账号开始邀请：" + bean.getNickname() + "->进群");
@@ -87,7 +87,7 @@ public class TaskWorker extends TimerTask {
             EventBus.getDefault().post("邀请加群成功");
             boolean addManage = loginRequest.addGroupManage(bean.getId() + "");
             if (!addManage) {
-                EventBus.getDefault().post("添加管理员失败");
+                EventBus.getDefault().post("添加管理员失败"+loginRequest.getErrorMessage());
                 continue;
             }
             EventBus.getDefault().post("添加管理员成功");
@@ -102,13 +102,13 @@ public class TaskWorker extends TimerTask {
             }
             String uids = new String(rnCryptorNative.encrypt(sb.toString(), Cons.KEY));
             if (!loginRequest.groupJoin(token, uids, groupId)) {
-                EventBus.getDefault().post("邀请加群失败1111");
+                EventBus.getDefault().post("邀请加群失败1111"+loginRequest.getErrorMessage());
                 continue;
             }
             EventBus.getDefault().post("邀请加群成功1111");
             //退群
             if(!loginRequest.groupRemove(token)){
-                EventBus.getDefault().post("退群失败");
+                EventBus.getDefault().post("退群失败"+loginRequest.getErrorMessage());
             }
             EventBus.getDefault().post("退群成功");
         }

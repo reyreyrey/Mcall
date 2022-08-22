@@ -64,6 +64,12 @@ public class LoginRequest {
         gson = new GsonBuilder().create();
     }
 
+    private String errorMessage;
+
+    public String getErrorMessage(){
+        return errorMessage;
+    }
+
     public boolean setPersonInfo(String token, String mobile, String nickname, String susername){
 
         try {
@@ -80,6 +86,7 @@ public class LoginRequest {
                     });
             return true;
         } catch (Exception e) {
+            this.errorMessage = e.toString();
             e.printStackTrace();
             return false;
         }
@@ -94,6 +101,7 @@ public class LoginRequest {
                     });
             return data.getCode() == 1;
         } catch (Exception e) {
+            this.errorMessage = e.toString();
             e.printStackTrace();
             return false;
         }
@@ -113,6 +121,7 @@ public class LoginRequest {
                     .execute(new ResponseClass<HttpData<LoginBean>>() {
                     }).getData();
         } catch (Exception e) {
+            this.errorMessage = e.toString();
             e.printStackTrace();
         }
         return null;
@@ -134,6 +143,7 @@ public class LoginRequest {
             JSONObject jsonObject = new JSONObject(json);
             code = jsonObject.getString("code");
         } catch (Exception e) {
+            this.errorMessage = e.toString();
             Log.e("----->", e.toString());
 
         }
@@ -154,6 +164,7 @@ public class LoginRequest {
 
              return smsLoginBean;
         } catch (Exception e) {
+            this.errorMessage = e.toString();
             return null;
         }
     }
@@ -170,6 +181,7 @@ public class LoginRequest {
             if(response == null)return null;
              json = response.body().string();
         } catch (Exception e) {
+            this.errorMessage = e.toString();
             return null;
         }
         String sub = json.substring(json.indexOf("1分钟内剩余取卡数:\":\"") + 13, json.indexOf("\",\"上线时间"));
@@ -195,6 +207,7 @@ public class LoginRequest {
                     });
             return true;
         } catch (Exception e) {
+            this.errorMessage = e.toString();
             e.printStackTrace();
             return false;
         }
@@ -213,6 +226,7 @@ public class LoginRequest {
                     });
             return true;
         } catch (Exception e) {
+            this.errorMessage = e.toString();
             e.printStackTrace();
             return false;
         }
@@ -228,6 +242,7 @@ public class LoginRequest {
                     });
             return data.getData().getCode() == 200;
         } catch (Exception e) {
+            this.errorMessage = e.toString();
             e.printStackTrace();
             return false;
         }
@@ -249,6 +264,7 @@ public class LoginRequest {
                     });
             return listHttpData.getData();
         } catch (Exception e) {
+            this.errorMessage = e.toString();
             e.printStackTrace();
         }
         return null;
@@ -272,6 +288,7 @@ public class LoginRequest {
                     });
             return l.getData();
         } catch (Exception e) {
+            this.errorMessage = e.toString();
             e.printStackTrace();
         }
         return null;
@@ -292,6 +309,7 @@ public class LoginRequest {
                     });
             return true;
         } catch (Exception e) {
+            this.errorMessage = e.toString();
             e.printStackTrace();
         }
         return false;
@@ -314,6 +332,7 @@ public class LoginRequest {
                     .execute(new ResponseClass<HttpData<SearchUserBean>>() {
                     }).getData();
         } catch (Exception e) {
+            this.errorMessage = e.toString();
             e.printStackTrace();
         }
         return null;
@@ -363,6 +382,7 @@ public class LoginRequest {
                     });
             return true;
         } catch (Exception e) {
+            this.errorMessage = e.toString();
             e.printStackTrace();
 
         }
@@ -386,6 +406,22 @@ public class LoginRequest {
                     .execute(new ResponseClass<HttpData<LoginBean>>() {
                     }).getData();
         } catch (Exception e) {
+            if(e instanceof ResultException){
+                ResultException exception = (ResultException) e;
+                if(exception.getMessage().equals("未知错误")){
+                    this.errorMessage = "账号被封";
+                    LoginBean loginBean = new LoginBean();
+                    loginBean.setUser_id(-1);
+                    return loginBean;
+                }
+                if(exception.getMessage().equals("账户已经被锁定")){
+                    this.errorMessage = "账号被锁定";
+                    LoginBean loginBean = new LoginBean();
+                    loginBean.setUser_id(-1);
+                    return loginBean;
+                }
+            }
+            this.errorMessage = e.toString();
             e.printStackTrace();
         }
         return null;
@@ -417,6 +453,7 @@ public class LoginRequest {
                     .execute(new ResponseClass<HttpData<List<FriendListBean>>>() {
                     }).getData();
         } catch (Exception e) {
+            this.errorMessage = e.toString();
             e.printStackTrace();
         }
         return null;
@@ -441,12 +478,13 @@ public class LoginRequest {
                     .execute(new ResponseClass<HttpData<Object>>() {
                     }).getData();
         } catch (Exception e) {
+            this.errorMessage = e.toString();
             e.printStackTrace();
         }
         return true;
     }
 
-    public IsNewDeviceBean isNewDevice(String username, String password){
+    public IsNewDeviceBean isNewDevice(String username, String password, String deviceid){
 
         try {
 
@@ -456,10 +494,12 @@ public class LoginRequest {
                             .setParam(gson.toJson(new IsNewDeviceApi.IsNewDeviceParam()
                                     .setUsername(username)
                                     .setPassword(password)
+                                    .setDeviceId(deviceid)
                             )))
                     .execute(new ResponseClass<HttpData<IsNewDeviceBean>>() {
                     }).getData();
         } catch (Exception e) {
+            this.errorMessage = e.toString();
             e.printStackTrace();
         }
         return null;
@@ -477,6 +517,7 @@ public class LoginRequest {
                     .execute(new ResponseClass<HttpData<List<AuditListBean>>>() {
                     }).getData();
         } catch (Exception e) {
+            this.errorMessage = e.toString();
             e.printStackTrace();
         }
         return null;
@@ -496,6 +537,7 @@ public class LoginRequest {
                     }).getData();
              return true;
         } catch (Exception e) {
+            this.errorMessage = e.toString();
             e.printStackTrace();
         }
         return false;
@@ -516,6 +558,7 @@ public class LoginRequest {
                     }).getData();
             return true;
         } catch (Exception e) {
+            this.errorMessage = e.toString();
             e.printStackTrace();
         }
         return false;
@@ -535,6 +578,7 @@ public class LoginRequest {
                     }).getData();
             return true;
         } catch (Exception e) {
+            this.errorMessage = e.toString();
             e.printStackTrace();
         }
         return false;

@@ -26,6 +26,7 @@ import org.litepal.LitePal;
 import java.util.HashMap;
 import java.util.List;
 
+import myapplication.base.CrashHandler;
 import myapplication.base.RequestHandler;
 import myapplication.base.RequestServer;
 import myapplication.base.UAIntercept;
@@ -44,6 +45,8 @@ public class MyApp extends MultiDexApplication implements Application.ActivityLi
     public void onCreate() {
         super.onCreate();
         LitePal.initialize(this);
+        CrashHandler crashHandler = CrashHandler.getCrashHander();
+        crashHandler.init(this);
         init();
         registerActivityLifecycleCallbacks(this);
     }

@@ -43,6 +43,10 @@
             android:screenOrientation="portrait"/>
         <activity android:name="myapplication.ui.AddFriendActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name="myapplication.ui.CheckAccountStatusActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="myapplication.ui.AddOwerFriendsActivity"
+            android:screenOrientation="portrait"/>
         <service android:name="myapplication.service.TaskService"/>
     </application>
 

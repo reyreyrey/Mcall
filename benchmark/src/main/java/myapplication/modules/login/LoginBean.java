@@ -119,6 +119,10 @@ public class LoginBean extends LitePalSupport implements Serializable{
         this.last_login_time = last_login_time;
     }
 
+    public boolean isfeng(){
+        return user_id == -1;
+    }
+
     public Integer getCity() {
         return this.city;
     }

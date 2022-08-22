@@ -1,6 +1,9 @@
 package myapplication.ui;
 
+import android.content.DialogInterface;
 import android.util.Log;
+
+import androidx.appcompat.app.AlertDialog;
 
 import org.litepal.LitePal;
 
@@ -49,6 +52,16 @@ public class LoadGroupUserActivity extends BaseMessageActivity<ActivityLoadGroup
         count = memberAddBeanList.size();
         binding.btn.setText("拉取群成员列表,目前共有"+count+"个群成员已经获取到");
         binding.btn.setOnClickListener(v->{
+            if(MainActivityNew.needLoadGroupInfo == null){
+                new AlertDialog.Builder(context).setMessage("请先登录有群的账号").setNegativeButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        finish();
+                    }
+                }).create().show();
+                return;
+            }
             new Thread(){
                 @Override
                 public void run() {
@@ -70,23 +83,17 @@ public class LoadGroupUserActivity extends BaseMessageActivity<ActivityLoadGroup
         sendTextMessage("开始配置代理");
         IPProxy.setProxy(this);
         sendTextMessage("代理配置成功");
-        sendTextMessage("正在登陆账号");
-        LoginBean bean = request.login(configBean.getGroupAccount(), configBean.getGroupPwd(), null, null);
-        if (bean == null) {
-            sendDialogMessage("主账号登陆失败，请重新尝试");
-            return;
-        }
-        String mainToken = bean.getToken();
-        sendTextMessage("主账号登陆成功，Token：" + mainToken);
-        sendTextMessage("开始获取主账号的群列表");
+
+        String mainToken = MainActivityNew.needLoadGroupInfo.getToken();
+        sendTextMessage("开始获取群列表");
         //获取群列表
         List<GroupListBean> listHttpData = request.getGroupList(mainToken);
         if (listHttpData == null) {
-            sendDialogMessage("群列表获取失败，请重新尝试");
+            sendDialogMessage("群列表获取失败，请重新尝试,原因："+request.getErrorMessage());
             return;
         }
 //
-        sendTextMessage("主账号的群列表获取成功，一共有 " + listHttpData.size() + " 个群");
+        sendTextMessage("群列表获取成功，一共有 " + listHttpData.size() + " 个群");
 //
         for (GroupListBean listBean : listHttpData) {
             String groupID = listBean.getId() + "";
@@ -103,28 +110,31 @@ public class LoadGroupUserActivity extends BaseMessageActivity<ActivityLoadGroup
         sendTextMessage("，一共有 " + allMembers.size() + " 个用户");
         sendTextMessage("开始去重");
         List<MemberAddBean> list = LitePal.findAll(MemberAddBean.class);
+        Log.e("---->", list.size() + "---");
+        List<MemberAddBean> needAddlist = new ArrayList<>();
         for (GroupMemberListBean b : allMembers) {
-            for (MemberAddBean addBean : list) {
-                if (addBean.getNeedAddUserID() == b.getId()) {
-                    //
-                    sendTextMessage(b.getNick() + "已经存在于数据库中");
-                    Log.e("---->", b.getNick() + "已经存在于数据库中");
-                    continue;
-                }
-            }
+//            for (MemberAddBean addBean : list) {
+//                Log.e("---->", addBean.getNeedAddUserID() + "---"+b.getId());
+//                if (addBean.getNeedAddUserID().equals(b.getId())) {
+//                    //
+//                    sendTextMessage(b.getNick() + "已经存在于数据库中");
+//                    Log.e("---->", b.getNick() + "已经存在于数据库中");
+//
+//                    break;
+//                }
+//            }
             MemberAddBean memberAddBean = new MemberAddBean();
             memberAddBean.setAdd(false);
             memberAddBean.setAgree(false);
             memberAddBean.setNeedAddUserNick(b.getNick());
             memberAddBean.setNeedAddUserID(b.getId());
-            memberAddBean.save();
+            memberAddBean.saveOrUpdate("needAddUserID=?",b.getId()+"");
             Log.e("---->", b.getNick() + "存储完成");
             sendTextMessage(b.getNick() + "存储完成");
-            count++;
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    binding.btn.setText("拉取群成员列表,目前共有"+count+"个群成员已经获取到");
+                    binding.btn.setText("拉取群成员列表,目前共有"+LitePal.findAll(MemberAddBean.class).size()+"个群成员已经获取到");
                 }
             });
         }

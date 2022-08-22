@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements OnHttpListener<Ob
                 sendTextMessage("开始登陆接码平台");
                 smsLoginBean = request.smsLogin();
                 if (smsLoginBean == null) {
-                    sendTextMessage("接码平台登陆失败");
+                    sendTextMessage("接码平台登陆失败"+request.getErrorMessage());
                     return;
                 }
                 sendTextMessage("接码平台登陆成功，余额：" + smsLoginBean.getData().get(0).getMoney());
@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements OnHttpListener<Ob
                     boolean success = request.sendSms(phoneNum);
                     if (!success) {
                         //发送失败
-                        sendTextMessage("手机号" + phoneNum + "验证码发送失败");
+                        sendTextMessage("手机号" + phoneNum + "验证码发送失败"+request.getErrorMessage());
                         continue;
                     }
                     sendTextMessage("手机号" + phoneNum + "验证码已经发送，开始等待获取接码平台的验证码");
@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements OnHttpListener<Ob
                     }
                     sendTextMessage("验证码获取成功，验证码是：" + code);
                     if (!request.checkSmsCode(phoneNum, code)) {
-                        sendTextMessage("验证码检测失败");
+                        sendTextMessage("验证码检测失败"+request.getErrorMessage());
                         continue;
                     }
                     sendTextMessage("验证码检测成功，开始使用手机号登陆");
@@ -209,19 +209,19 @@ public class MainActivity extends AppCompatActivity implements OnHttpListener<Ob
                     //设置用户名
                     boolean b1 = request.setPersonInfo(loginBean.getToken(), phoneNum, nickname, susername);
                     if (!b1) {
-                        sendTextMessage("设置昵称失败");
+                        sendTextMessage("设置昵称失败"+request.getErrorMessage());
                         continue;
                     }
                     sendTextMessage("设置昵称成功");
                     boolean b2 = request.setUserName(loginBean.getToken(), username);
                     if (!b2) {
-                        sendTextMessage("设置用户名失败");
+                        sendTextMessage("设置用户名失败"+request.getErrorMessage());
                         continue;
                     }
                     sendTextMessage("设置用户名成功");
                     boolean b3 = request.setPwd(loginBean.getToken());
                     if (!b2) {
-                        sendTextMessage("设置密码失败");
+                        sendTextMessage("设置密码失败"+request.getErrorMessage());
                         continue;
                     }
                     sendTextMessage("设置密码成功");
@@ -259,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements OnHttpListener<Ob
         sendTextMessage("正在登陆主账号");
         LoginBean bean = request.login(Cons.main_account_name, Cons.main_account_pwd, null, null);
         if (bean == null) {
-            sendTextMessage("主账号登陆失败，请重新尝试");
+            sendTextMessage("主账号登陆失败，请重新尝试"+request.getErrorMessage());
             return;
         }
         String mainToken = bean.getToken();
@@ -270,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements OnHttpListener<Ob
         //获取群列表
         List<GroupListBean> listHttpData = request.getGroupList(mainToken);
         if (listHttpData == null) {
-            sendTextMessage("群列表获取失败，请重新尝试");
+            sendTextMessage("群列表获取失败，请重新尝试"+request.getErrorMessage());
             return;
         }
 //
@@ -282,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements OnHttpListener<Ob
             //获取群成员
             List<GroupMemberListBean> l = request.getGroupMemberList(mainToken, groupID);
             if (l == null) {
-                sendTextMessage("获取 " + listBean.getGroup_name() + "失败");
+                sendTextMessage("获取 " + listBean.getGroup_name() + "失败"+request.getErrorMessage());
                 continue;
             }
             sendTextMessage("获取 " + listBean.getGroup_name() + "的群成员列表成功，一共有 " + l.size() + " 个用户");

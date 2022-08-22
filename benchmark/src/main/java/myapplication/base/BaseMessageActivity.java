@@ -107,7 +107,6 @@ public abstract class BaseMessageActivity<T extends ViewDataBinding> extends Bas
         Message message = Message.obtain();
         message.what = 1;
         message.obj = msg + "\n";
-        Log2File.w(msg + "\n");
         handler.sendMessage(message);
     }
 

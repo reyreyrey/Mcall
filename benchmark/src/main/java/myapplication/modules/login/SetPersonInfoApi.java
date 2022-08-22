@@ -11,7 +11,7 @@ public class SetPersonInfoApi extends BaseApi {
         private String nickname ;
         private String surname ;
         private String mobile;
-        private String avatar = "http://oss-cn-hongkong.aliyuncs.com/userAvatar/avatar/2.png";
+        private String avatar = "http://oss-cn-hongkong.aliyuncs.com/userAvatar/avatar/6.png";
 
         public String getToken() {
             return token;

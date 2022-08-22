@@ -17,7 +17,7 @@ public class IsNewDeviceApi extends BaseApi {
         private String username;
         private String password ;
         private String method = "api/userInfo/getIsNewDevice";
-        private String deviceId = Cons.main_deviceId;
+        private String deviceId;
 
         public String getUsername() {
             return username;
@@ -49,8 +49,9 @@ public class IsNewDeviceApi extends BaseApi {
             return deviceId;
         }
 
-        public void setDeviceId(String deviceId) {
+        public IsNewDeviceParam setDeviceId(String deviceId) {
             this.deviceId = deviceId;
+            return this;
         }
     }
 }
