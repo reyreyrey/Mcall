@@ -2,6 +2,8 @@ package myapplication.modules.proxy;
 
 import android.text.TextUtils;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -14,6 +16,7 @@ public class IPProxyBean {
 
         private String code;
 
+        @SerializedName("Data")
         private List<Obj> obj;
 
         public String getMsg() {
@@ -50,7 +53,7 @@ public class IPProxyBean {
 
         public static class Obj implements Serializable {
             private String port;
-
+            @SerializedName("IP")
             private String ip;
 
             public int getPort() {

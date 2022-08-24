@@ -20,21 +20,30 @@ import java.util.Date;
 
 import myapplication.ui.MainActivity;
 import myapplication.utils.Config;
+import okhttp3.Authenticator;
+import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.Route;
 
 public class IPProxy {
-
+    private static String userName = "85F98CA9";
+    private static String password = "9371F9C2E7ED";
     private static IPProxyBean.Obj getProxyConfig() {
         try {
             Thread.sleep(1000);
             //String url = "http://pandavip.xiongmaodaili.com/xiongmao-web/apiPlus/vgb?secret=7f1676d501de4c881bf1c31148c84027&orderNo=VGB20220815182350WOaqowAS&count=10&isTxt=0&proxyType=1&validTime=0&removal=0&cityIds=";
-           String url = Config.getConfig().getIpProxyUrl();
+//           String url = "http://www.siyetian.com/index/apis_get.html?token=gHbi1yTUVVeNRVVw0ERRhXTR1STqFUeNpWQ00kaNBjTEVlMPRUSx0ERRFjTqdGN.gN4UTOxMTM2YTM&limit=1&type=0&time=0&split=0&split_text=&area=0&repeat=0&isp=";
+//            String url = Config.getConfig().getIpProxyUrl();
+            String url = "https://proxy.qg.net/extract?Key=85F98CA9";
            if(TextUtils.isEmpty(url))return null;
             Response response = OkGo.get(url)
                     .execute();
             String json = response.body().string();
             Log.e("---->", json);
+//            String ip = json.split(":")[0];
+//            int port = Integer.parseInt(json.split(":")[1]);
             IPProxyBean ipProxyBean = new GsonBuilder().create().fromJson(json, IPProxyBean.class);
             if (ipProxyBean != null)
                 return ipProxyBean.getObj().get(0);
@@ -70,7 +79,18 @@ public class IPProxy {
         Log.e("----->", "ip是通的");
         //开始设置代理
         OkHttpClient client = EasyConfig.getInstance().getClient();
-        client = client.newBuilder().proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(obj.getIp(), obj.getPort()))).build();
+        Authenticator proxyAuthenticator = new Authenticator() {
+            @Override
+            public Request authenticate(Route route, Response response) throws IOException {
+                String credential = Credentials.basic(userName, password);
+                return response.request().newBuilder()
+                        .header("Proxy-Authorization", credential)
+                        .build();
+            }
+        };
+        client = client.newBuilder().proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(obj.getIp(), obj.getPort())))
+                .proxyAuthenticator(proxyAuthenticator)
+                .build();
         EasyConfig.getInstance().setClient(client);
         requestTime = new Date().getTime();
         return obj;
