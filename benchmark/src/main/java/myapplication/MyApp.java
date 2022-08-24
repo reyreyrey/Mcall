@@ -20,6 +20,7 @@ import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import org.litepal.LitePal;
 
@@ -45,10 +46,9 @@ public class MyApp extends MultiDexApplication implements Application.ActivityLi
     public void onCreate() {
         super.onCreate();
         LitePal.initialize(this);
-        CrashHandler crashHandler = CrashHandler.getCrashHander();
-        crashHandler.init(this);
         init();
         registerActivityLifecycleCallbacks(this);
+        CrashReport.initCrashReport(getApplicationContext(), "90d12eb3f1", false);
     }
     private static HashMap<String, List<Cookie>> cookieStore = new HashMap<>();
     private static String getCacheKey(HttpUrl url) {
