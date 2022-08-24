@@ -62,8 +62,9 @@ public class MemberAddBean extends LitePalSupport implements Serializable {
     @Override
     public String toString() {
         return "MemberAddBean{" +
-                "mineUserID='" + mineUserID + '\'' +
+                "mineUserID=" + mineUserID +
                 ", needAddUserID=" + needAddUserID +
+                ", needAddUserNick='" + needAddUserNick + '\'' +
                 ", isAgree=" + isAgree +
                 ", isAdd=" + isAdd +
                 '}';

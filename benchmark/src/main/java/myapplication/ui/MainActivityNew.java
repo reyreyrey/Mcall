@@ -42,8 +42,10 @@ import org.litepal.LitePal;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -100,6 +102,16 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
         requestPermission();
         binding.tvHintMessage.setText("加载中...");
         request = new LoginRequest(this);
+
+        List<String> memberAddBeanList = Arrays.asList("1","2","3","4","5","6");
+        ListIterator<String> in = memberAddBeanList.listIterator();
+        while(in.hasNext()){
+            LogUtils.e("---->","data=="+in.next());
+        }
+//        for(int i=0;i<memberAddBeanList.size();i++){
+//            LogUtils.e("---->","i=="+i);
+//            LogUtils.e("---->","data=="+in.next());
+//        }
     }
 
     @Override

@@ -22,6 +22,7 @@ import myapplication.modules.login.LoginBean;
 import myapplication.modules.login.LoginRequest;
 import myapplication.modules.proxy.IPProxy;
 import myapplication.utils.Config;
+import myapplication.utils.LogUtils;
 import tgio.benchmark.R;
 import tgio.benchmark.databinding.ActivityLoadGroupUserBinding;
 
@@ -49,6 +50,8 @@ public class LoadGroupUserActivity extends BaseMessageActivity<ActivityLoadGroup
         allMembers = new NickNameKeyWordsArrayList();;
         request = new LoginRequest(this);
         List<MemberAddBean> memberAddBeanList = LitePal.findAll(MemberAddBean.class);
+
+        LogUtils.e("---->", memberAddBeanList.toString());
         count = memberAddBeanList.size();
         binding.btn.setText("拉取群成员列表,目前共有"+count+"个群成员已经获取到");
         binding.btn.setOnClickListener(v->{

@@ -63,7 +63,7 @@ public class TaskWorker extends TimerTask {
             EventBus.getDefault().post("开始登录" + loginBean.getNickname());
             LoginBean bean = loginRequest.login(loginBean.getUsername(), "666888aa..", loginBean.getDeviceid(), loginBean.getClientid());
             if (bean == null) {
-                EventBus.getDefault().post(bean.getNickname() + "->登录失败"+loginRequest.getErrorMessage());
+                EventBus.getDefault().post(bean.getUsername() + "->登录失败"+loginRequest.getErrorMessage());
                 continue;
             }
             String token = bean.getToken();
