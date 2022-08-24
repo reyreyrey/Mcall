@@ -120,6 +120,30 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
         EventBus.getDefault().unregister(this);
     }
 
+    public void showGroupList(View v){
+        if(groupOwerInfo == null){
+            sendDialogMessage("先登陆群主账号");
+            return;
+        }
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                List<GroupListBean> listHttpData = request.getGroupList(groupOwerInfo.getToken());
+                if(listHttpData == null){
+                    sendDialogMessage("获取群列表失败，原因："+request.getErrorMessage());
+                    return;
+                }
+                StringBuffer sb = new StringBuffer();
+                for(GroupListBean groupListBean : listHttpData){
+                    sb.append("群名字："+groupListBean.getGroup_name());
+                    sb.append("群号："+groupListBean.getId());
+                    sb.append("\n");
+                }
+                sendDialogMessage(sb.toString());
+            }
+        }.start();
+    }
     public void includeAccount(View v){
         new Thread(){
             @Override
