@@ -78,6 +78,12 @@
                 android:layout_weight="1"
                 android:text="添加好友"
                 android:onClick="addFriend"/>
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="显示用户好友个数"
+                android:onClick="showFriendNum"/>
 
 
         </LinearLayout>

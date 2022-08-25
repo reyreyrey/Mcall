@@ -119,6 +119,9 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
         super.onDestroy();
         EventBus.getDefault().unregister(this);
     }
+    public void showFriendNum(View v){
+        startActivity(new Intent(this, ShowFriendCountActivity.class));
+    }
 
     public void showGroupList(View v){
         if(groupOwerInfo == null){

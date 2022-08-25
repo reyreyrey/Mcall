@@ -60,22 +60,22 @@ public class TaskWorker extends TimerTask {
             EventBus.getDefault().post("设置代理");
             IPProxy.setProxy(null);
             EventBus.getDefault().post("代理设置成功");
-            EventBus.getDefault().post("开始登录" + loginBean.getNickname());
+            EventBus.getDefault().post("开始登录" + loginBean.getUsername());
             LoginBean bean = loginRequest.login(loginBean.getUsername(), "666888aa..", loginBean.getDeviceid(), loginBean.getClientid());
             if (bean == null) {
-                EventBus.getDefault().post(bean.getUsername() + "->登录失败"+loginRequest.getErrorMessage());
+                EventBus.getDefault().post(loginBean.getUsername() + "->登录失败"+loginRequest.getErrorMessage());
                 continue;
             }
             String token = bean.getToken();
-            loginRequest.addFriend(token, "120433");
-            EventBus.getDefault().post(bean.getNickname() + "->登录成功，token->" + token);
-            EventBus.getDefault().post("开始获取" + bean.getNickname() + "的好友列表");
+//            loginRequest.addFriend(token, "120433");
+            EventBus.getDefault().post(bean.getUsername() + "->登录成功，token->" + token);
+            EventBus.getDefault().post("开始获取" + bean.getUsername() + "的好友列表");
             List<FriendListBean> friendListBeanList = loginRequest.getFriendLists(token);
             if (friendListBeanList == null || friendListBeanList.size() == 0) {
                 EventBus.getDefault().post("获取好友失败，或没有好友"+loginRequest.getErrorMessage());
                 continue;
             }
-            EventBus.getDefault().post("群主账号开始邀请：" + bean.getNickname() + "->进群");
+            EventBus.getDefault().post("群主账号开始邀请：" + bean.getUsername() + "->进群");
             String other_id = bean.getId() + "";
             other_id = new String(rnCryptorNative.encrypt(other_id, Cons.KEY));
             String groupId = new String(rnCryptorNative.encrypt(configBean.getMainGroupId(), Cons.KEY));
