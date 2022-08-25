@@ -51,12 +51,14 @@ public abstract class BaseMessageActivity<T extends ViewDataBinding> extends Bas
                     break;
                 case 2:
                     String showDialogMsg = (String) msg.obj;
-                    new AlertDialog.Builder(context).setMessage(showDialogMsg).setNegativeButton("确定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }).create().show();
+                    try{
+                        new AlertDialog.Builder(context).setMessage(showDialogMsg).setNegativeButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).create().show();
+                    }catch (Throwable e){}
                     break;
                 case 3:
                     if (dialog != null)

@@ -158,7 +158,10 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                     String clientid = UUID.randomUUID().toString().toUpperCase(Locale.ROOT);
                     String deviceid = UUID.randomUUID().toString().toUpperCase(Locale.ROOT);
                     LoginBean loginBean = request.loginByPhoneNum(phoneNum, code, clientid, deviceid);
-
+                    if(loginBean == null){
+                        sendTextMessage("登录失败，原因："+request.getErrorMessage());
+                        continue;
+                    }
                     Calendar calendar = Calendar.getInstance();
                     String nickname = getRandomString();
                     String susername = getRandomString();

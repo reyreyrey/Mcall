@@ -1,5 +1,6 @@
 package myapplication.ui;
 
+import android.text.TextUtils;
 import android.view.View;
 
 import org.greenrobot.eventbus.EventBus;
@@ -47,9 +48,13 @@ public class ShowFriendCountActivity extends BaseMessageActivity<ActivityShowFri
                 sendTextMessage("注册用户一共有：" + regs.size() + "个");
                 int count = 0;
                 for (LoginBean loginBean : regs) {
+                    if(TextUtils.isEmpty(loginBean.getUsername())){
+                        continue;
+                    }
                     sendTextMessage("设置代理");
                     IPProxy.setProxy(null);
                     sendTextMessage("代理设置成功");
+
                     sendTextMessage("开始登录" + loginBean.getUsername());
                     LoginBean bean = loginRequest.login(loginBean.getUsername(), "666888aa..", loginBean.getDeviceid(), loginBean.getClientid());
                     if (bean == null) {
