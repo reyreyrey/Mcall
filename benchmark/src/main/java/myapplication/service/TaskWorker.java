@@ -2,6 +2,8 @@ package myapplication.service;
 
 import static java.lang.Thread.sleep;
 
+import static myapplication.ui.MainActivityNew.mainActivityNew;
+
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -38,7 +40,7 @@ public class TaskWorker extends TimerTask {
 
     public TaskWorker(int taskRunTimeS) {
         this.taskRunTimeS = taskRunTimeS;
-        loginRequest = new LoginRequest(MyApp.fragmentActivity);
+        loginRequest = new LoginRequest(mainActivityNew);
         configBean = Config.getConfig();
         rnCryptorNative = new RNCryptorNative();
     }

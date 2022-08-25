@@ -79,6 +79,7 @@ import tgio.rncryptor.RNCryptorNative;
 
 public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding> {
 
+    public static MainActivityNew mainActivityNew;
     public static LoginBean groupOwerInfo, needLoadGroupInfo;
     private LoginRequest request;
     @Override
@@ -98,6 +99,7 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
 
     @Override
     protected void init() {
+        mainActivityNew = this;
         EventBus.getDefault().register(this);
         requestPermission();
         binding.tvHintMessage.setText("加载中...");
