@@ -28,15 +28,15 @@ import okhttp3.Response;
 import okhttp3.Route;
 
 public class IPProxy {
-    private static String userName = "40975EEC";
-    private static String password = "A74FBBE585D7";
+    private static String userName = "183E6A05";
+    private static String password = "9439B58A4FC5";
     private static IPProxyBean.Obj getProxyConfig() {
         try {
             Thread.sleep(1000);
             //String url = "http://pandavip.xiongmaodaili.com/xiongmao-web/apiPlus/vgb?secret=7f1676d501de4c881bf1c31148c84027&orderNo=VGB20220815182350WOaqowAS&count=10&isTxt=0&proxyType=1&validTime=0&removal=0&cityIds=";
 //           String url = "http://www.siyetian.com/index/apis_get.html?token=gHbi1yTUVVeNRVVw0ERRhXTR1STqFUeNpWQ00kaNBjTEVlMPRUSx0ERRFjTqdGN.gN4UTOxMTM2YTM&limit=1&type=0&time=0&split=0&split_text=&area=0&repeat=0&isp=";
 //            String url = Config.getConfig().getIpProxyUrl();
-            String url = "https://proxy.qg.net/extract?Key=40975EEC";
+            String url = "https://proxy.qg.net/extract?Key=183E6A05";
            if(TextUtils.isEmpty(url))return null;
             Response response = OkGo.get(url)
                     .execute();
