@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import myapplication.modules.login.LoginRequest;
+import myapplication.modules.proxy.IPProxy;
 import myapplication.modules.searchUser.SearchUserBean;
 
 public class GetAllUserList {
@@ -28,6 +29,9 @@ public class GetAllUserList {
         int count = Config.getConfig().getSearchLastUserCount();
         for (int id = last_userid; id < last_userid + count; id++) {
             Log.e("---->", "->开始获取列表+"+id);
+            EventBus.getDefault().post("开始设置代理");
+            IPProxy.setProxy(null);
+            EventBus.getDefault().post("代理设置成功");
             EventBus.getDefault().post("开始获取列表"+id);
             SearchUserBean searchUserBean = request.getUserByID(id + "", currentToken);
             if (searchUserBean == null) {
