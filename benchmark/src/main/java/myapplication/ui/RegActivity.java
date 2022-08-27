@@ -165,7 +165,8 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                     Calendar calendar = Calendar.getInstance();
                     String nickname = getRandomString();
                     String susername = getRandomString();
-                    String username = RandomUtil.getRandomchar1()+RandomUtil.getRandomnum2()+RandomUtil.getRandomchar2()+calendar.get(Calendar.SECOND)+RandomUtil.getRandomchar1();
+                    String username = RandomUtil.getRandomchar5()+RandomUtil.getRandomnum36();
+//                    String username = RandomUtil.getRandomchar1()+RandomUtil.getRandomnum2()+RandomUtil.getRandomchar2()+calendar.get(Calendar.SECOND)+RandomUtil.getRandomchar1();
                     sendTextMessage("手机号登陆成功，开始设置用户名和密码");
                     sendTextMessage("用户名是：" + username);
                     sendTextMessage("密码是：666888aa..");

@@ -49,6 +49,15 @@ public class RandomUtil {
         return new String(nonceChars);
     }
 
+    public static String getRandomchar5() {
+        char[] nonceChars = new char[5];  //指定长度为6位/自己可以要求设置
+
+        for (int index = 0; index < nonceChars.length; ++index) {
+            nonceChars[index] = SYMBOLS.charAt(RANDOM.nextInt(SYMBOLS.length()));
+        }
+        return new String(nonceChars);
+    }
+
     public static String getRandomnum() {
         char[] nonceChars = new char[3];  //指定长度为6位/自己可以要求设置
 
@@ -67,6 +76,24 @@ public class RandomUtil {
         return new String(nonceChars);
     }
 
+    public static String getRandomnum36() {
+        char[] nonceChars = new char[getRandomLenth()];  //指定长度为6位/自己可以要求设置
+
+        for (int index = 0; index < nonceChars.length; ++index) {
+            nonceChars[index] = SYMBOLS1.charAt(RANDOM.nextInt(SYMBOLS1.length()));
+        }
+        return new String(nonceChars);
+    }
+
+    public static int getRandomLenth() {
+        char[] nonceChars = new char[1];  //指定长度为6位/自己可以要求设置
+
+        for (int index = 0; index < nonceChars.length; ++index) {
+            nonceChars[index] = "3456".charAt(RANDOM.nextInt("3456".length()));
+        }
+        String s = new String(nonceChars);
+        return Integer.parseInt(s);
+    }
 
 
 }
