@@ -18,6 +18,8 @@ public class UAIntercept implements Interceptor {
                 .removeHeader("User-Agent")
                 .addHeader("User-Agent", "MCall/1.2.6(iPhone;iOS 15.6;Scale/3.00)")
                 .build();
-        return chain.proceed(request);
+        Response response = chain.proceed(request);
+        response.header("connection", "close");
+        return response;
     }
 }
