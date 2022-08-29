@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentActivity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hjq.http.EasyHttp;
+import com.hjq.http.lifecycle.ApplicationLifecycle;
 import com.hjq.http.model.ResponseClass;
 import com.lzy.okgo.OkGo;
 
@@ -58,9 +59,9 @@ import okhttp3.Response;
 public class LoginRequest {
     private Gson gson;
     private SmsLoginBean smsLoginBean;
-    private FragmentActivity context;
+    private ApplicationLifecycle context;
     public LoginRequest(FragmentActivity context) {
-        this.context = context;
+        this.context = ApplicationLifecycle.getInstance();
         gson = new GsonBuilder().create();
     }
 
