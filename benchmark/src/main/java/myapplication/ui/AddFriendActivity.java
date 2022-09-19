@@ -108,7 +108,7 @@ public class AddFriendActivity extends BaseMessageActivity<ActivityAddFriendBind
         List<LoginBean> regs = LitePal.findAll(LoginBean.class);
         sendTextMessage("注册的用户列表+" + regs.size());
         //搜索到的用户列表
-        List<MemberAddBean> searchUserBeans = LitePal.where("isAdd = ?", "0").find(MemberAddBean.class);
+        List<MemberAddBean> searchUserBeans = LitePal.findAll(MemberAddBean.class);
         sendTextMessage("未添加的群成员列表+" + searchUserBeans.size());
         if (searchUserBeans == null || searchUserBeans.size() < 0) {
             sendDialogMessage("未添加的群成员少于10条，请先返回，获取群成员");

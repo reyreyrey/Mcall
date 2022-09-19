@@ -30,6 +30,7 @@ import java.util.List;
 import myapplication.base.CrashHandler;
 import myapplication.base.RequestHandler;
 import myapplication.base.RequestServer;
+import myapplication.base.TokenAuthenticator;
 import myapplication.base.UAIntercept;
 import myapplication.bean.ConfigBean;
 import myapplication.modules.searchUser.SearchUserBean;
@@ -63,6 +64,7 @@ public class MyApp extends MultiDexApplication implements Application.ActivityLi
                 .addInterceptor(new ChuckerInterceptor(getApplicationContext()))
                 .addInterceptor(new CookieInterceptor())
                 .addInterceptor(new UAIntercept())
+                .authenticator(new TokenAuthenticator())
 //                .cookieJar(new CookieJarImpl(new MemoryCookieStore()))
                 .sslSocketFactory(sslConfig.getSslSocketFactory(), sslConfig.getTrustManager())
                 .hostnameVerifier(HttpSslFactory.generateUnSafeHostnameVerifier())
