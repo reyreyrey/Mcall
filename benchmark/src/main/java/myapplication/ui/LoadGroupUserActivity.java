@@ -126,14 +126,20 @@ public class LoadGroupUserActivity extends BaseMessageActivity<ActivityLoadGroup
 //                    break;
 //                }
 //            }
-            MemberAddBean memberAddBean = new MemberAddBean();
-            memberAddBean.setAdd(false);
-            memberAddBean.setAgree(false);
-            memberAddBean.setNeedAddUserNick(b.getNick());
-            memberAddBean.setNeedAddUserID(b.getId());
-            memberAddBean.saveOrUpdate("needAddUserID=?",b.getId()+"");
-            Log.e("---->", b.getNick() + "存储完成");
-            sendTextMessage(b.getNick() + "存储完成");
+            List<MemberAddBean> findBeans = LitePal.where("needAddUserID=?",b.getId()+"").find(MemberAddBean.class);
+            if(findBeans == null || findBeans.size() == 0){
+                MemberAddBean memberAddBean = new MemberAddBean();
+                memberAddBean.setAdd(false);
+                memberAddBean.setAgree(false);
+                memberAddBean.setNeedAddUserNick(b.getNick());
+                memberAddBean.setNeedAddUserID(b.getId());
+                memberAddBean.saveOrUpdate("needAddUserID=?",b.getId()+"");
+                Log.e("---->", b.getNick() + "存储完成");
+                sendTextMessage(b.getNick() + "存储完成");
+            }else{
+                sendTextMessage(b.getNick() + "已经存在于数据库中");
+            }
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
