@@ -300,6 +300,7 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
                 super.run();
                 List<LoginBean> regs = LitePal.findAll(LoginBean.class);
                 LoginBean loginBean = regs.get(0);
+                loginBean = request.login(loginBean.getUsername(), "666888aa..", loginBean.getDeviceid(), loginBean.getClientid());
                 GetAllUserList.getAllUser(new LoginRequest(context), loginBean.getToken());
             }
         }.start();
