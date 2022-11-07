@@ -98,7 +98,10 @@ public class AddFriendActivity extends BaseMessageActivity<ActivityAddFriendBind
             }
             sendTextMessage("账号登录成功");
             for (int i = 0; i < 5; i++) {
-                addByDearch(listIterator, loginBean.getToken());
+                if(!addByDearch(listIterator, loginBean.getToken())){
+                    sendTextMessage("搜索到的账号已经添加完毕");
+                    return;
+                }
             }
         }
     }
@@ -151,19 +154,21 @@ public class AddFriendActivity extends BaseMessageActivity<ActivityAddFriendBind
 
     }
 
-    void addByDearch(ListIterator<SearchUserBean> listIterator, String token) {
-
+    boolean addByDearch(ListIterator<SearchUserBean> listIterator, String token) {
+        SearchUserBean searchUserBean;
         try{
-            SearchUserBean searchUserBean = listIterator.next();
-            sendTextMessage("->开始添加+" + searchUserBean.getNickname());
-            boolean flag = request.addFriend(token, searchUserBean.getUserid() + "");
-            sendTextMessage("->" + (flag ? "添加成功" : "添加失败"+request.getErrorMessage()));
-            if (flag) {
-                searchUserBean.setAdded(true);
-                searchUserBean.saveOrUpdate();
-                sendTextMessage("->保存成功");
-            }
-        }catch (Exception e){}
-
+             searchUserBean = listIterator.next();
+        }catch (Exception e){
+            return false;
+        }
+        sendTextMessage("->开始添加+" + searchUserBean.getNickname());
+        boolean flag = request.addFriend(token, searchUserBean.getUserid() + "");
+        sendTextMessage("->" + (flag ? "添加成功" : "添加失败"+request.getErrorMessage()));
+        if (flag) {
+            searchUserBean.setAdded(true);
+            searchUserBean.saveOrUpdate();
+            sendTextMessage("->保存成功");
+        }
+        return true;
     }
 }
