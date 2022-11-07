@@ -35,6 +35,8 @@
         </activity>
         <activity android:name="myapplication.ui.ConfigActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name="myapplication.ui.EditNicknameActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name="myapplication.ui.ShowFriendCountActivity"
             android:screenOrientation="portrait"/>
 

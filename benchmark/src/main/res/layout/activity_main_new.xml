@@ -154,7 +154,13 @@
                 android:text="登录有群的账号（每次启动都要登录）"
                 android:onClick="loginNeedLoadGroupUserAccount"/>
 
-
+            <Button
+                android:id="@+id/btn_edit_nickname"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="批量修改已注册的用户昵称"
+                android:onClick="editNickname"/>
 
         </LinearLayout>
 

@@ -417,6 +417,9 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
         sendDialogMessage("群账号登录成功");
     }
 
+    public void editNickname(View v){
+    }
+
     public void addOwerFriend(View v){
         startActivity(new Intent(context, AddOwerFriendsActivity.class));
     }

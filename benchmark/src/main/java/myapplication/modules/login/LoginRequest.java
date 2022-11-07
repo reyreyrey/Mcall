@@ -388,7 +388,36 @@ public class LoginRequest {
 
         }
         return false;
+
     }
+
+    public boolean editNickname(String token,String nickname){
+        try {
+            EasyHttp.post(context).api(new SetNicknameApi().setParam(
+                    gson.toJson(new SetNicknameApi.SetNicknameParam().setNickname(nickname).setToken(token))
+            )).execute(new ResponseClass<HttpData<LoginBean>>() {
+            }).getData();
+        } catch (Exception e) {
+            if(e instanceof ResultException){
+                ResultException exception = (ResultException) e;
+                if(exception.getMessage().equals("未知错误")){
+                    this.errorMessage = "账号被封";
+                    LoginBean loginBean = new LoginBean();
+                    loginBean.setUser_id(-1);
+                }
+                if(exception.getMessage().equals("账户已经被锁定")){
+                    this.errorMessage = "账号被锁定";
+                    LoginBean loginBean = new LoginBean();
+                    loginBean.setUser_id(-1);
+                }
+            }
+            this.errorMessage = e.toString();
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
     public LoginBean login(String account, String pwd, String deviceid, String clientid, String captcha){
         deviceid = deviceid == null ? Cons.deviceId : deviceid;
         clientid = clientid == null ? Cons.clientId : clientid;
