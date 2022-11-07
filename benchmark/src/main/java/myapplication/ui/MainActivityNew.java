@@ -418,6 +418,7 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
     }
 
     public void editNickname(View v){
+        startActivity(new Intent(context, EditNicknameActivity.class));
     }
 
     public void addOwerFriend(View v){

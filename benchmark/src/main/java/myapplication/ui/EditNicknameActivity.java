@@ -19,6 +19,7 @@ import tgio.benchmark.databinding.ActivityCheckAccountBinding;
  */
 public class EditNicknameActivity extends BaseMessageActivity<ActivityCheckAccountBinding> {
     private LoginRequest request;
+    private static final String [] nicknames = {"管理", "财财", "财务", "主持管理"};
     @Override
     protected String getTitleStr() {
         return "批量修改昵称";
@@ -64,7 +65,7 @@ public class EditNicknameActivity extends BaseMessageActivity<ActivityCheckAccou
                         }else{
                             sendTextMessage(loginBean.getUsername()+"登陆成功,状态正常");
                             String token = loginBean.getToken();
-                            String nickname = "";
+                            String nickname = nicknames[(int) (Math.random()*3)] + "（进群有福利）";
                             boolean flag = request.editNickname(token, nickname);
                             if(flag){
                                 sendTextMessage(bean.getNickname()+"修改昵称完成，修改为:"+nickname);
