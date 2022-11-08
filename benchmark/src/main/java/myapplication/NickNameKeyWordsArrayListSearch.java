@@ -10,14 +10,15 @@ import java.util.Collection;
 
 import myapplication.bean.ConfigBean;
 import myapplication.modules.groupMemberList.GroupMemberListBean;
+import myapplication.modules.searchUser.SearchUserBean;
 import myapplication.utils.Config;
 
-public class NickNameKeyWordsArrayList extends ArrayList<GroupMemberListBean> {
+public class NickNameKeyWordsArrayListSearch extends ArrayList<SearchUserBean> {
      String [] keywords = {
             "财务","cw","CW","ZB","zb","主持","管理","机器人","亚泰","招财猫","财财","客服"
     };
 
-    public NickNameKeyWordsArrayList() {
+    public NickNameKeyWordsArrayListSearch() {
         ConfigBean configBean = Config.getConfig();
         String keyWords = configBean.getNickNameKeyWords();
         if(!TextUtils.isEmpty(keyWords) && keyWords.contains(",")){
@@ -33,29 +34,17 @@ public class NickNameKeyWordsArrayList extends ArrayList<GroupMemberListBean> {
         return false;
     }
 
-    @Override
-    public boolean add(GroupMemberListBean groupMemberListBean) {
-        if(!isConstant(groupMemberListBean.getNick())){
-            Log.e("---->","添加调："+groupMemberListBean.getNick());
+    public boolean addList(SearchUserBean groupMemberListBean) {
+        if(!isConstant(groupMemberListBean.getNickname())){
+            Log.e("---->","添加调："+groupMemberListBean.getNickname());
+            add(groupMemberListBean);
             return true;
 
         }else{
-            Log.e("---->","过滤调："+groupMemberListBean.getNick());
+            Log.e("---->","过滤调："+groupMemberListBean.getNickname());
             return false;
         }
     }
 
-    @Override
-    public boolean addAll(@NonNull Collection<? extends GroupMemberListBean> c) {
-        for(GroupMemberListBean bean : c){
-            if(!isConstant(bean.getNick())){
-                add(bean);
-                Log.e("---->","添加调："+bean.getNick());
 
-            }else{
-                Log.e("---->","过滤调："+bean.getNick());
-            }
-        }
-        return true;
-    }
 }

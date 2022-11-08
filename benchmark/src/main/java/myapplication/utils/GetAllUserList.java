@@ -12,6 +12,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import myapplication.NickNameKeyWordsArrayList;
+import myapplication.NickNameKeyWordsArrayListSearch;
 import myapplication.modules.login.LoginRequest;
 import myapplication.modules.proxy.IPProxy;
 import myapplication.modules.searchUser.SearchUserBean;
@@ -27,6 +29,7 @@ public class GetAllUserList {
         }
         EventBus.getDefault().post("clear");
         int count = Config.getConfig().getSearchLastUserCount();
+        NickNameKeyWordsArrayListSearch list = new NickNameKeyWordsArrayListSearch();
         for (int id = last_userid; id < last_userid + count; id++) {
             Log.e("---->", "->开始获取列表+"+id);
             EventBus.getDefault().post("开始设置代理");
@@ -44,9 +47,14 @@ public class GetAllUserList {
 //                continue;
 //            }
 
-            boolean f = searchUserBean.save();
-            EventBus.getDefault().post(f ? searchUserBean.getNickname() + "->已经添加进数据库" : searchUserBean.getNickname() + "添加失败");
-            Log.e("---->", f ? searchUserBean.getNickname() + "->已经添加进数据库" : searchUserBean.getNickname() + "添加失败");
+            if(list.addList(searchUserBean)){
+                boolean b = searchUserBean.save();
+                EventBus.getDefault().post(b ? searchUserBean.getNickname() + "->已经添加进数据库" : searchUserBean.getNickname() + "->添加失败" );
+            }else{
+                EventBus.getDefault().post(searchUserBean.getNickname() + "->已经被过滤掉");
+            }
+            //boolean f = searchUserBean.save();
+
         }
 //        LitePal.saveAll(list);
         EventBus.getDefault().post("结束");

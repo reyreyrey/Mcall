@@ -99,6 +99,7 @@ public class TaskWorker extends TimerTask {
             boolean addManage = loginRequest.addGroupManage(bean.getId() + "");
             if (!addManage) {
                 EventBus.getDefault().post("添加管理员失败"+loginRequest.getErrorMessage());
+                exitGroup(token);
                 continue;
             }
             EventBus.getDefault().post("添加管理员成功");
@@ -117,22 +118,33 @@ public class TaskWorker extends TimerTask {
             String uids = new String(rnCryptorNative.encrypt(sb.toString(), Cons.KEY));
             if (!loginRequest.groupJoin(token, uids, groupId)) {
                 EventBus.getDefault().post("邀请加群失败1111"+loginRequest.getErrorMessage());
+                exitGroup(token);
                 continue;
             }
             EventBus.getDefault().post("邀请加群成功1111");
-            EventBus.getDefault().post("设置代理");
-            IPProxy.setProxy(null);
-            EventBus.getDefault().post("代理设置成功");
-            //退群
-            if(!loginRequest.groupRemove(token)){
-                EventBus.getDefault().post("退群失败"+loginRequest.getErrorMessage());
-            }
-            EventBus.getDefault().post("退群成功");
+
+            exitGroup(token);
         }
 
         EventBus.getDefault().post("执行完成，开始等待" + taskRunTimeS/1000/60 + "分钟后执行");
         Calendar nowTime = Calendar.getInstance();
         nowTime.add(Calendar.MINUTE, taskRunTimeS);
         System.out.println(simpleDateFormat.format(nowTime.getTime()));
+    }
+
+    void exitGroup(String token){
+        EventBus.getDefault().post("设置代理");
+        IPProxy.setProxy(null);
+        EventBus.getDefault().post("代理设置成功");
+        //退群
+        int i=0;
+        while(!loginRequest.groupRemove(token)){
+            if(i >= 3) {
+                EventBus.getDefault().post("退群失败"+loginRequest.getErrorMessage());
+                break;
+            }
+            i++;
+        }
+        EventBus.getDefault().post("退群成功");
     }
 }
