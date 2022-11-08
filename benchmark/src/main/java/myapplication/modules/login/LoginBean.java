@@ -413,4 +413,17 @@ public class LoginBean extends LitePalSupport implements Serializable{
                 ", register=" + register +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object arg0) {
+        LoginBean p = (LoginBean) arg0;
+        return user_id.equals(p.user_id);
+    }
+
+    @Override
+    public int hashCode() {
+        String str = user_id + nickname;
+        return str.hashCode();
+    }
+
 }

@@ -52,7 +52,7 @@ public class CheckAccountStatusActivity extends BaseMessageActivity<ActivityChec
                     sendTextMessage("代理设置成功");
                     sendTextMessage("开始登录"+bean.getNickname());
                     LoginBean loginBean = request.login(bean.getUsername(), "666888aa..", bean.getDeviceid(), bean.getClientid());
-                    if(loginBean == null || loginBean.isfeng()){
+                    if(loginBean == null){
                         sendTextMessage("登录"+bean.getNickname()+"失败，原因："+request.getErrorMessage());
                     }else{
                         int userid = loginBean.getUser_id();

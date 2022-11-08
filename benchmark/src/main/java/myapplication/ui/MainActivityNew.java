@@ -42,12 +42,19 @@ import org.litepal.LitePal;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import myapplication.NickNameKeyWordsArrayList;
 import myapplication.base.BaseActivity;
@@ -160,13 +167,26 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
                 String json = Log2File.getLog();
                 JSONArray jsonArray = new JSONArray(json);
                 LitePal.deleteAll(LoginBean.class);
+//                List<LoginBean> loginBeans = new ArrayList<>();
+//                    List<LoginBean> loginBeans1 = new ArrayList<>();
                 for(int i=0;i<jsonArray.length();i++){
                     JSONObject object = jsonArray.getJSONObject(i);
                     object.remove("baseObjId");
                     LoginBean bean = new GsonBuilder().create().fromJson(object.toString(), LoginBean.class);
+//                    loginBeans.add(bean);
                     LogUtils.e("---->","保存---》"+ bean.save());
+//                    loginBeans1.add(bean);
                 }
 
+//                    LogUtils.e("---->","111111---->"+ loginBeans.size());
+//                    List<LoginBean> firstMenu=loginBeans.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(()->new TreeSet<LoginBean>(Comparator.comparing(LoginBean::getUser_id))), ArrayList::new));
+//                    loginBeans.clear();
+//                    loginBeans.addAll(firstMenu);
+//                    LogUtils.e("---->","22222---->"+ loginBeans.size());
+////                    for(LoginBean bean : loginBeans){
+////                        LogUtils.e("---->","5555---->"+ bean.getNickname());
+////                    }
+//                    LitePal.saveAll(loginBeans);
 
                 runOnUiThread(new Runnable() {
                     @Override
