@@ -103,27 +103,34 @@ public class TaskWorker extends TimerTask {
                 continue;
             }
             EventBus.getDefault().post("添加管理员成功");
-            StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < friendListBeanList.size(); i++) {
-                sb.append(friendListBeanList.get(i).getUserid());
-                if (i == friendListBeanList.size() - 1) {
-
-                } else {
-                    sb.append(",");
-                }
-            }
             EventBus.getDefault().post("设置代理");
             IPProxy.setProxy(null);
             EventBus.getDefault().post("代理设置成功");
-            String uids = new String(rnCryptorNative.encrypt(sb.toString(), Cons.KEY));
-            if (!loginRequest.groupJoin(token, uids, groupId)) {
-                EventBus.getDefault().post("邀请加群失败1111"+loginRequest.getErrorMessage());
-                exitGroup(token);
-                continue;
+//            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < friendListBeanList.size(); i++) {
+                String uids = new String(rnCryptorNative.encrypt(friendListBeanList.get(i).getUserid().toString(), Cons.KEY));
+                if (!loginRequest.groupJoin(token, uids, groupId)) {
+                    EventBus.getDefault().post("邀请--"+friendListBeanList.get(i).getNickname()+"--加群失败,原因："+loginRequest.getErrorMessage());
+                }else{
+                    EventBus.getDefault().post("邀请--"+friendListBeanList.get(i).getNickname()+"--加群成功");
+                }
+//                sb.append(friendListBeanList.get(i).getUserid());
+//                if (i == friendListBeanList.size() - 1) {
+//
+//                } else {
+//                    sb.append(",");
+//                }
             }
-            EventBus.getDefault().post("邀请加群成功1111");
-
             exitGroup(token);
+//            String uids = new String(rnCryptorNative.encrypt(sb.toString(), Cons.KEY));
+//            if (!loginRequest.groupJoin(token, uids, groupId)) {
+//                EventBus.getDefault().post("邀请加群失败1111"+loginRequest.getErrorMessage());
+//                exitGroup(token);
+//                continue;
+//            }
+//            EventBus.getDefault().post("邀请加群成功1111");
+
+//            exitGroup(token);
         }
 
         EventBus.getDefault().post("执行完成，开始等待" + taskRunTimeS/1000/60 + "分钟后执行");
