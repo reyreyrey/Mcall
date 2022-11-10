@@ -28,7 +28,7 @@ public class ConfigBean implements Serializable {
 
   private String coTurnServer;
 
-  private String longurl;
+  private String longurl;//这个就是websocket长连接的url
 
   private String appkey;
 
