@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <litepal>
     <dbname value="data_user" />
-    <version value="8" />
+    <version value="9" />
     <list>
         <mapping class="myapplication.modules.login.LoginBean" />
         <mapping class="myapplication.bean.MemberAddBean"/>

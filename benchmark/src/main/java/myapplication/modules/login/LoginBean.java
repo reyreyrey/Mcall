@@ -172,7 +172,7 @@ public class LoginBean extends LitePalSupport implements Serializable{
     }
 
     public String getNickname() {
-        return this.nickname;
+        return this.nickname == null ? "" : this.nickname;
     }
 
     public void setNickname(String nickname) {
