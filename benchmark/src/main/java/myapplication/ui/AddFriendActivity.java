@@ -166,7 +166,7 @@ public class AddFriendActivity extends BaseMessageActivity<ActivityAddFriendBind
         sendTextMessage("->" + (flag ? "添加成功" : "添加失败"+request.getErrorMessage()));
         if (flag) {
             searchUserBean.setAdded(true);
-            searchUserBean.saveOrUpdate();
+            searchUserBean.save();
             sendTextMessage("->保存成功");
         }
         return true;

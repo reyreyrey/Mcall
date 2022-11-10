@@ -63,6 +63,7 @@ import myapplication.base.Cons;
 import myapplication.bean.ConfigBean;
 import myapplication.bean.MemberAddBean;
 import myapplication.modules.audit.AuditListBean;
+import myapplication.modules.friendlist.FriendListBean;
 import myapplication.modules.groupList.GroupListBean;
 import myapplication.modules.groupMemberList.GroupMemberListBean;
 import myapplication.modules.isNewDevices.IsNewDeviceBean;
@@ -229,6 +230,7 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
         List<MemberAddBean> memberAddBeanList = LitePal.findAll(MemberAddBean.class);
         binding.btnGroupUser.setText("拉取群成员列表,目前共有"+memberAddBeanList.size()+"个群成员已经获取到");
         List<SearchUserBean> searchUserBeansAll = LitePal.findAll(SearchUserBean.class);
+        LogUtils.e("---->", searchUserBeansAll.toString());
         List<SearchUserBean> searchUserBeans = LitePal.where("isAdded = ?", "0").find(SearchUserBean.class);
 
         binding.tvHintMessage.append("搜索到的用户数量：" + searchUserBeansAll.size() + "个");
@@ -448,5 +450,9 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
 
     void toast(String msg) {
         Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+    }
+
+    public void clearCache(View v){
+        LitePal.deleteAll(FriendListBean.class);
     }
 }

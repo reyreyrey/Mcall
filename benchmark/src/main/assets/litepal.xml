@@ -8,5 +8,6 @@
         <mapping class="myapplication.modules.groupMemberList.GroupMemberListBean"/>
         <mapping class="myapplication.modules.searchUser.SearchUserBean"/>
         <mapping class="myapplication.bean.ConfigBean"/>
+        <mapping class="myapplication.modules.friendlist.FriendListBean"/>
     </list>
 </litepal>

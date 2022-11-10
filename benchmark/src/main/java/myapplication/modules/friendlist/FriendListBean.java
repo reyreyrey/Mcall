@@ -1,10 +1,12 @@
 package myapplication.modules.friendlist;
 
+import org.litepal.crud.LitePalSupport;
+
 /**
  * @作者 ：guocongcong
  * @日期：2022.08.19 18:53
  */
-public class FriendListBean {
+public class FriendListBean extends LitePalSupport {
 
 
     private Integer show_mobile;

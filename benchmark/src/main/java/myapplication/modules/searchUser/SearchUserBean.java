@@ -314,4 +314,13 @@ public class SearchUserBean extends LitePalSupport {
         this.username = username;
     }
 
+    @Override
+    public String toString() {
+        return "SearchUserBean{" +
+                "isAdded=" + isAdded +
+                ", userid=" + userid +
+                ", nickname='" + nickname + '\'' +
+                ", username='" + username + '\'' +
+                '}';
+    }
 }
