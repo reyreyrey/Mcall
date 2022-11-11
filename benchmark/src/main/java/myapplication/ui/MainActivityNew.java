@@ -484,12 +484,16 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
                     String json = Log2File.readFindUser();
                     JSONArray jsonArray = new JSONArray(json);
                     LitePal.deleteAll(SearchUserBean.class);
+                    List<SearchUserBean> loginBeans = new ArrayList();
                     for(int i=0;i<jsonArray.length();i++){
                         JSONObject object = jsonArray.getJSONObject(i);
                         object.remove("baseObjId");
                         SearchUserBean bean = new GsonBuilder().create().fromJson(object.toString(), SearchUserBean.class);
-                        LogUtils.e("---->","保存---》"+ bean.save());
+                        loginBeans.add(bean);
+//                        LogUtils.e("---->","保存---》"+ bean.save());
                     }
+                    List<SearchUserBean> firstMenu=loginBeans.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(()->new TreeSet<SearchUserBean>(Comparator.comparing(SearchUserBean::getUserid))), ArrayList::new));
+                    LitePal.saveAll(firstMenu);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -516,6 +520,7 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
             @Override
             public void run() {
                 super.run();
+                showProgressDialog();
                 List<SearchUserBean> searchUserBeansAll = LitePal.findAll(SearchUserBean.class);
                 for(SearchUserBean bean : searchUserBeansAll){
                     bean.setAdded(false);
@@ -532,6 +537,7 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
                 String json = new GsonBuilder().create().toJson(searchUserBeansAll1);
                 Log2File.newFindUserFile();
                 Log2File.writeFindUser(json);
+                dismissProgressDialog();
                 sendDialogMessage("清除完毕");
             }
         }.start();

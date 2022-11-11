@@ -18,7 +18,7 @@ public interface Cons {
 
     String SMS_KEy = "ytfvkUWpSas-oweVs1Za9OqPg2uDRXrGsnO6p4BjApXZi6vfmf3C3g";
 
-    String SMS_URl = "http://api.sqhyw.net:81/";
+    String SMS_URl = "http://125.77.159.17:8000/api/sign/username=mister&password=666888aa";
     String SMS_URl2 = "http://api.jinpaocun.net:81/";
 
      String clientId = "6DAAA90A-BDF9-4605-B22A-7DF11B1FCEE9";

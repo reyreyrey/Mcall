@@ -3,6 +3,7 @@ package myapplication.modules.login;
 import static myapplication.base.Cons.project_id;
 
 import android.app.Service;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.fragment.app.FragmentActivity;
@@ -58,7 +59,7 @@ import okhttp3.Response;
 
 public class LoginRequest {
     private Gson gson;
-    private SmsLoginBean smsLoginBean;
+    public String smsToken,smsyue;
     private ApplicationLifecycle context;
     public LoginRequest(FragmentActivity context) {
         this.context = ApplicationLifecycle.getInstance();
@@ -132,17 +133,23 @@ public class LoginRequest {
         phoneNum = phoneNum.replaceAll("86-", "");
         String code = "";
         try {
-            Response response = OkGo.get(Cons.SMS_URl+"api/get_message")
-                    .params("token", smsLoginBean.getToken())
-                    .params("project_id", project_id)
-                    .params("phone_num", phoneNum)
-                    .params("r", Math.random()*10000)
+            Response response = OkGo.get("http://api.my531.com/GetMsg/?token="+smsToken+"&id=17556&phone="+phoneNum)
+//                    .params("token", smsLoginBean.getToken())
+//                    .params("project_id", project_id)
+//                    .params("phone_num", phoneNum)
+//                    .params("r", Math.random()*10000)
                     .execute();
             Log.e("----->", response == null ? "结果为空---":"00000000000");
             if(response == null)return "";
             String json = response.body().string();
-            JSONObject jsonObject = new JSONObject(json);
-            code = jsonObject.getString("code");
+            Log.e("----->json----》", json);
+            if(json.startsWith("1")){
+                String smsMessage = json.split("\\|")[1];
+                int index = smsMessage.indexOf(":");
+                smsMessage = smsMessage.substring(index+1, index+5);
+                Log.e("----->json----》", smsMessage);
+                return smsMessage;
+            }
         } catch (Exception e) {
             this.errorMessage = e.toString();
             Log.e("----->", e.toString());
@@ -151,36 +158,64 @@ public class LoginRequest {
         return code;
     }
 
-    public SmsLoginBean smsLogin() {
-        if (smsLoginBean != null) {
-            return smsLoginBean;
+    public String smsLogin() {
+        if (!TextUtils.isEmpty(smsToken)) {
+            return smsToken;
         }
         try {
-            Response response = OkGo.get(Cons.SMS_URl+"api/logins")
-                    .params("username", Cons.sms_username)
-                    .params("password", Cons.sms_password)
+            Response response = OkGo.get("http://api.my531.com/Login/?username=mister&password=666888aa")
+//                    .params("username", Cons.sms_username)
+//                    .params("password", Cons.sms_password)
                     .execute();
             if(response == null)return null;
-             smsLoginBean = new GsonBuilder().create().fromJson(response.body().string(), SmsLoginBean.class);
+            String result = response.body().string();
 
-             return smsLoginBean;
+            if(result.startsWith("1")){
+                smsToken = result.split("\\|")[1];
+                smsyue = result.split("\\|")[2];
+                return smsToken;
+            }
+
+             return null;
         } catch (Exception e) {
             this.errorMessage = e.toString();
             return null;
         }
     }
 
-    public String getPhoneNum(SmsLoginBean loginBean) {
+    public String getSmsye(){
+        if (TextUtils.isEmpty(smsToken)) {
+            return null;
+        }
+        try {
+            Response response = OkGo.get("http://125.77.159.17:8000/api/yh_gx/token="+smsToken)
+//                    .params("username", Cons.sms_username)
+//                    .params("password", Cons.sms_password)
+                    .execute();
+            if(response == null)return null;
+            String result = response.body().string();
+            return result.split("\\|")[0];
+
+        } catch (Exception e) {
+            this.errorMessage = e.toString();
+            return null;
+        }
+    }
+
+    public String getPhoneNum() {
         String json = null;
         try {
-            Response response = OkGo.get(Cons.SMS_URl+"api/get_mobile")
-                    .params("token", loginBean.getToken())
-                    .params("project_id", project_id)
-                    .params("operator", "4")
-                    .params("scope_black", "1700,1701,1702,162,1703,1705,1706,165,1704,1707,1708,1709,171,167,1349,174,140,141,144,146,148,195")
+            Response response = OkGo.get("http://api.my531.com/GetPhone/?token="+smsToken+"&id=17556&card=2")
+//                    .params("token", loginBean.getToken())
+//                    .params("project_id", project_id)
+//                    .params("operator", "4")
+//                    .params("scope_black", "1700,1701,1702,162,1703,1705,1706,165,1704,1707,1708,1709,171,167,1349,174,140,141,144,146,148,195")
                     .execute();
             if(response == null)return null;
              json = response.body().string();
+             if(json.startsWith("1")){
+                 return json.split("\\|")[1];
+             }
         } catch (Exception e) {
             this.errorMessage = e.toString();
             return null;

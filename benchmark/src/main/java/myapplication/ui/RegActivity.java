@@ -42,7 +42,7 @@ import tgio.benchmark.databinding.ActivityRegBinding;
 public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
     private boolean isStart = false;
     private LoginRequest request;
-    private SmsLoginBean smsLoginBean;
+    private String smsToken;
 
 
     @Override
@@ -82,17 +82,17 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                 super.run();
 
                 sendTextMessage("开始登陆接码平台");
-                smsLoginBean = request.smsLogin();
-                if (smsLoginBean == null) {
+                smsToken = request.smsLogin();
+                if (smsToken == null) {
                     sendTextMessage("接码平台登陆失败"+request.getErrorMessage());
                     return;
                 }
 
-                double money = Double.parseDouble(smsLoginBean.getData().get(0).getMoney());
+                double money = Double.parseDouble(request.smsyue);
                 sendTextMessage("接码平台登陆成功，余额：" + money);
 
-                if(money < 10){
-                    sendDialogMessage("余额少于10元，请登录接码平台充值，接码平台账号"+ Cons.sms_username+",密码："+Cons.sms_password);
+                if(money < 5){
+                    sendDialogMessage("余额少于5元，请登录接码平台充值，接码平台账号"+ Cons.sms_username+",密码："+Cons.sms_password);
                     return;
                 }
 
@@ -106,7 +106,7 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
 
                     sendTextMessage("开始注册第" + (i + 1) + "个账号");
                     sendTextMessage("开始获取手机号");
-                    String phoneNum = request.getPhoneNum(smsLoginBean);
+                    String phoneNum = request.getPhoneNum();
 
                     if (TextUtils.isEmpty(phoneNum)) {
                         //号码不足
@@ -138,7 +138,7 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                     int count = 0;
                     do {
                         try {
-                            sleep(1000);
+                            sleep(5000);
                         } catch (InterruptedException e) {
                         }
                         code = request.getSms(phoneNum);
