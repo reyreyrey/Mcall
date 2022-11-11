@@ -1,5 +1,6 @@
 package myapplication.ui;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -60,13 +61,14 @@ public class AddFriendActivity extends BaseMessageActivity<ActivityAddFriendBind
     }
 
     public void addSearch(View v){
+        final String num = binding.edtStart.getText().toString().trim();
         new Thread() {
             @Override
             public void run() {
                 super.run();
                 if (isRun) return;
                 isRun = true;
-                addFriendBySearch();
+                addFriendBySearch(num);
                 isRun = false;
                 sendTextMessage("添加好友完成");
                 sendDialogMessage("添加好友完成");
@@ -74,12 +76,13 @@ public class AddFriendActivity extends BaseMessageActivity<ActivityAddFriendBind
         }.start();
     }
 
-    void addFriendBySearch() {
+    void addFriendBySearch(String num) {
+        if(TextUtils.isEmpty(num))num = "0";
         //注册的用户列表
         List<LoginBean> regs = LitePal.findAll(LoginBean.class);
         sendTextMessage("注册的用户列表+" + regs.size());
         //搜索到的用户列表
-        List<SearchUserBean> searchUserBeans = LitePal.where("isAdded = ?", "0").find(SearchUserBean.class);
+        List<SearchUserBean> searchUserBeans = LitePal.where("isAdded = ?", "0").where("userid > ?",num).find(SearchUserBean.class);
         sendTextMessage("未添加的用户列表+" + searchUserBeans.size());
         if (searchUserBeans == null || searchUserBeans.size() < 0) {
             sendDialogMessage("未添加的用户少于0条，请先返回，获取用户");

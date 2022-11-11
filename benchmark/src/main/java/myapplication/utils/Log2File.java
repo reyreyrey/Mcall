@@ -17,128 +17,75 @@ import java.util.Date;
  */
 public class Log2File {
 
-    private static boolean  logInit;
-    private static BufferedWriter writer, errorwriter;
-    private static BufferedReader reader;
 
     private Log2File()
     {
 
     }
 
-    /**
-     * 初始化Log,创建log文件
-     * @param ctx
-     * @param fileName
-     * @return
-     */
-    public static boolean init(Context ctx, String fileName)
-    {
-        if(!logInit)
-        {
-            String state = Environment.getExternalStorageState();
-            if (Environment.MEDIA_MOUNTED.equals(state))
+    private static String getBasePath(){
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)){
+            File sdDir = Environment.getExternalStoragePublicDirectory("");
+            File logDir = new File(sdDir.toString() + "/log2file/" );
+            if(!logDir.exists())
             {
-                File sdDir = Environment.getExternalStoragePublicDirectory("");
-                LogUtils.e("---->", sdDir.toString());
-                File logDir = new File(sdDir.toString() + "/log2file/" );
-
-                try {
-                    if(!logDir.exists())
-                    {
-                        logDir.mkdirs();
-                    }
-
-                    File logFile = new File(logDir, fileName);
-                    logFile.createNewFile();
-                    File errorfile = new File(logDir, "error.txt");
-                    errorfile.createNewFile();
-
-                    reader = new BufferedReader(new FileReader(logFile));
-
-                    writer = new BufferedWriter(new FileWriter(logFile, true));
-                    errorwriter = new BufferedWriter(new FileWriter(errorfile, true));
-                    logInit = true;
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                    LogUtils.e("---->", e.toString());
-                }
-
-            }else{
-                LogUtils.e("---->", "11111111111");
+                logDir.mkdirs();
             }
-
+            return logDir.getAbsolutePath();
         }
-
-        return logInit;
+        return "";
     }
 
-    /**
-     * 写一条log
-     * @param msg
-     */
-    public static void w(String msg)
-    {
-        if(logInit)
-        {
-            try {
-                Date date = new Date();
-                writer.write( msg);
-                writer.newLine();
-                writer.flush();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
+    public static boolean write(String message, String Fullpath){
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(new File(Fullpath), true));
+            bw.write( message);
+            bw.flush();
+            bw.close();
+        } catch (IOException e) {
+            LogUtils.e("---->", "write error:"+e.toString());
+            return false;
+        }
+        return true;
+    }
+
+    public static String read(String Fullpath){
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(new File(Fullpath)));
+            StringBuffer sb = new StringBuffer();
+            String buffer;
+            while((buffer = br.readLine()) != null){
+                sb.append(buffer);
             }
+            return sb.toString();
+        } catch (IOException e) {
+            LogUtils.e("---->", "read error:"+e.toString());
+        }
+        return "";
+    }
+
+    public static boolean writeRegUser(String s){
+        return write(s, new File(getBasePath(), "log.txt").getAbsolutePath());
+    }
+    public static String readRegUser(){
+        return read(new File(getBasePath(), "log.txt").getAbsolutePath());
+    }
+
+    public static boolean writeFindUser(String s){
+        return write(s, new File(getBasePath(), "search_users.txt").getAbsolutePath());
+    }
+    public static String readFindUser(){
+        return read(new File(getBasePath(), "search_users.txt").getAbsolutePath());
+    }
+    public static void newFindUserFile(){
+        File f = new File(getBasePath(), "search_users.txt");
+        f.delete();
+        try {
+            f.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    public static void exception(String msg)
-    {
-        if(logInit)
-        {
-            try {
-                errorwriter.write( msg);
-                errorwriter.newLine();
-                errorwriter.flush();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-            }
-        }
-    }
-
-    public static String getLog(){
-        if(logInit){
-            try{
-                StringBuffer sb = new StringBuffer();
-                String buffer;
-                while((buffer = reader.readLine()) != null){
-                    sb.append(buffer);
-                }
-                return sb.toString();
-            }catch (Exception e){}
-        }
-        return null;
-    }
-    /**
-     * 关闭log
-     */
-    public static void close()
-    {
-        if(logInit)
-        {
-            try {
-                writer.close();
-                writer = null;
-                reader.close();
-                reader = null;
-
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-            logInit = false;
-        }
-    }
 }

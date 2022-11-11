@@ -179,6 +179,42 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="存储userid获取的用户"
+                android:onClick="saveUidFriend"/>
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="导入存储的userid用户"
+                android:onClick="importUidFriend"/>
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="清空存储的userid用户"
+                android:onClick="clearUidFriend"/>
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="清除存储的userid用户的已添加状态"
+                android:onClick="clearUidFriendStatus"/>
+
+
+        </LinearLayout>
+
         <include layout="@layout/include_message_view"/>
 
     </LinearLayout>

@@ -20,6 +20,13 @@
                 android:onClick="addGroup"
                 android:text="添加好友(添加群成员)" />
 
+            <EditText
+                android:id="@+id/edt_start"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="输入从哪个userid开始"
+                android:inputType="number"/>
+
             <androidx.appcompat.widget.AppCompatButton
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

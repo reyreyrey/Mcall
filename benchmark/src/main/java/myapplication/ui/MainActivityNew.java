@@ -165,7 +165,7 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
                 try{
 
                 showProgressDialog();
-                String json = Log2File.getLog();
+                String json = Log2File.readRegUser();
                 JSONArray jsonArray = new JSONArray(json);
                 LitePal.deleteAll(LoginBean.class);
 //                List<LoginBean> loginBeans = new ArrayList<>();
@@ -267,7 +267,6 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
                     public void onGranted(List<String> permissions, boolean all) {
                         if (all) {
                             toast("获取存储权限成功");
-                            Log2File.init(getApplicationContext(), "log.txt");
                         }
                     }
 
@@ -296,9 +295,8 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
     public void export(View v) {
         List<LoginBean> regs = LitePal.findAll(LoginBean.class);
         String json = new GsonBuilder().create().toJson(regs);
-        Log2File.w(json);
+        Log2File.writeRegUser(json);
         Toast.makeText(context, "导出成功", Toast.LENGTH_LONG).show();
-        Log2File.close();
     }
 
     public void addFriend(View v){
@@ -454,5 +452,88 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
 
     public void clearCache(View v){
         LitePal.deleteAll(FriendListBean.class);
+    }
+
+    public void saveUidFriend(View v){
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                List<SearchUserBean> searchUserBeansAll = LitePal.findAll(SearchUserBean.class);
+                String json = new GsonBuilder().create().toJson(searchUserBeansAll);
+                Log2File.newFindUserFile();
+                Log2File.writeFindUser(json);
+                sendDialogMessage("导出成功");
+            }
+        }.start();
+
+    }
+    public void importUidFriend(View v){
+        String uids = Log2File.readFindUser();
+        if(TextUtils.isEmpty(uids)){
+            Toast.makeText(context, "没有缓存", Toast.LENGTH_LONG).show();
+            return;
+        }
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                try{
+
+                    showProgressDialog();
+                    String json = Log2File.readFindUser();
+                    JSONArray jsonArray = new JSONArray(json);
+                    LitePal.deleteAll(SearchUserBean.class);
+                    for(int i=0;i<jsonArray.length();i++){
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        object.remove("baseObjId");
+                        SearchUserBean bean = new GsonBuilder().create().fromJson(object.toString(), SearchUserBean.class);
+                        LogUtils.e("---->","保存---》"+ bean.save());
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            refresh();
+                        }
+                    });
+//
+                    sendDialogMessage("导入成功");
+                    LogUtils.e("---->","结束了");
+                }catch (Exception e){
+                    LogUtils.e("---->","Exception->"+e.toString());
+                }
+                dismissProgressDialog();
+            }
+        }.start();
+    }
+    public void clearUidFriend(View v){
+        Log2File.newFindUserFile();
+        Toast.makeText(context, "删除成功", Toast.LENGTH_LONG).show();
+    }
+
+    public void clearUidFriendStatus(View v){
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                List<SearchUserBean> searchUserBeansAll = LitePal.findAll(SearchUserBean.class);
+                for(SearchUserBean bean : searchUserBeansAll){
+                    bean.setAdded(false);
+                    bean.save();
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        refresh();
+                    }
+                });
+
+                List<SearchUserBean> searchUserBeansAll1 = LitePal.findAll(SearchUserBean.class);
+                String json = new GsonBuilder().create().toJson(searchUserBeansAll1);
+                Log2File.newFindUserFile();
+                Log2File.writeFindUser(json);
+                sendDialogMessage("清除完毕");
+            }
+        }.start();
     }
 }
