@@ -143,7 +143,7 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                         }
                         code = request.getSms(phoneNum);
                         count++;
-                    } while (TextUtils.isEmpty(code) && count < 150);
+                    } while (TextUtils.isEmpty(code) && count < 24);
                     if (TextUtils.isEmpty(code)) {
                         sendTextMessage("验证码获取超时");
                         continue;
@@ -171,23 +171,42 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                     sendTextMessage("用户名是：" + username);
                     sendTextMessage("密码是：666888aa..");
 
+                    int setPersonInfoCount = 0;
                     //设置用户名
-                    boolean b1 = request.setPersonInfo(loginBean.getToken(), phoneNum, nickname, susername);
-                    if (!b1) {
-                        sendTextMessage("设置昵称失败"+request.getErrorMessage());
-                        continue;
+                    while(!request.setPersonInfo(loginBean.getToken(), phoneNum, nickname, susername)){
+                        if(setPersonInfoCount > 3){
+                            sendTextMessage("设置昵称失败"+request.getErrorMessage());
+                            continue;
+                        }
+                        setPersonInfoCount++;
+                        sendTextMessage("开始尝试第"+setPersonInfoCount+"设置昵称");
                     }
+
+
+//                    boolean b1 = request.setPersonInfo(loginBean.getToken(), phoneNum, nickname, susername);
+//                    if (!b1) {
+//                        sendTextMessage("设置昵称失败"+request.getErrorMessage());
+//                        continue;
+//                    }
                     sendTextMessage("设置昵称成功");
-                    boolean b2 = request.setUserName(loginBean.getToken(), username);
-                    if (!b2) {
-                        sendTextMessage("设置用户名失败"+request.getErrorMessage());
-                        continue;
+
+                    int setUserNameCount = 0;
+                    while(!request.setUserName(loginBean.getToken(), username)){
+                        if(setUserNameCount > 3){
+                            sendTextMessage("设置用户名失败"+request.getErrorMessage());
+                            continue;
+                        }
+                        sendTextMessage("开始尝试第"+setPersonInfoCount+"设置用户名");
                     }
+
                     sendTextMessage("设置用户名成功");
-                    boolean b3 = request.setPwd(loginBean.getToken());
-                    if (!b3) {
-                        sendTextMessage("设置密码失败"+request.getErrorMessage());
-                        continue;
+
+                    int setPwdCount = 0;
+                    while(!request.setPwd(loginBean.getToken())){
+                        if(setPwdCount > 3){
+                            sendTextMessage("设置密码失败"+request.getErrorMessage());
+                            continue;
+                        }
                     }
                     sendTextMessage("设置密码成功");
                     loginBean.setUsername(username);
