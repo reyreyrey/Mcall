@@ -172,14 +172,20 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                     sendTextMessage("密码是：666888aa..");
 
                     int setPersonInfoCount = 0;
+                    boolean setPersonInfoSuccess = true;
                     //设置用户名
                     while(!request.setPersonInfo(loginBean.getToken(), phoneNum, nickname, susername)){
                         if(setPersonInfoCount > 3){
                             sendTextMessage("设置昵称失败"+request.getErrorMessage());
-                            return;
+                            setPersonInfoSuccess = false;
+                            break;
                         }
                         setPersonInfoCount++;
                         sendTextMessage("开始尝试第"+setPersonInfoCount+"设置昵称");
+                    }
+
+                    if(!setPersonInfoSuccess){
+                        continue;
                     }
 
 
@@ -191,25 +197,35 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                     sendTextMessage("设置昵称成功");
 
                     int setUserNameCount = 0;
+                    boolean setUserNameSuccess = true;
                     while(!request.setUserName(loginBean.getToken(), username)){
                         if(setUserNameCount > 3){
+                            setUserNameSuccess = false;
                             sendTextMessage("设置用户名失败"+request.getErrorMessage());
-                            return;
+                            break;
                         }
                         setUserNameCount++;
                         sendTextMessage("开始尝试第"+setUserNameCount+"设置用户名");
+                    }
+                    if(!setUserNameSuccess){
+                        continue;
                     }
 
                     sendTextMessage("设置用户名成功");
 
                     int setPwdCount = 0;
+                    boolean setPwdSuccess = true;
                     while(!request.setPwd(loginBean.getToken())){
                         if(setPwdCount > 3){
                             sendTextMessage("设置密码失败"+request.getErrorMessage());
-                            return;
+                            setPwdSuccess = false;
+                            break;
                         }
                         setPwdCount++;
                         sendTextMessage("开始尝试第"+setPwdCount+"设置密码");
+                    }
+                    if(!setPwdSuccess){
+                        continue;
                     }
                     sendTextMessage("设置密码成功");
                     loginBean.setUsername(username);
