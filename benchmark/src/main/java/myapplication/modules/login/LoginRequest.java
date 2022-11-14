@@ -479,6 +479,12 @@ public class LoginRequest {
                     loginBean.setUser_id(-1);
                     return loginBean;
                 }
+                if(exception.getMessage().equals("账户不正确")){
+                    this.errorMessage = "账户不正确";
+                    LoginBean loginBean = new LoginBean();
+                    loginBean.setUser_id(-1);
+                    return loginBean;
+                }
                 if(exception.getMessage().equals("账户已经被锁定")){
                     this.errorMessage = "账号被锁定";
                     LoginBean loginBean = new LoginBean();

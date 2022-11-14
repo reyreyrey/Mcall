@@ -224,34 +224,46 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
     }
 
     private void refresh() {
-        List<LoginBean> regs = LitePal.findAll(LoginBean.class);
-        binding.tvHintMessage.setText("已经注册的账号一共" + regs.size() + "个");
-        binding.tvHintMessage.append("\n");
-        List<MemberAddBean> memberAddBeanList = LitePal.findAll(MemberAddBean.class);
-        binding.btnGroupUser.setText("拉取群成员列表,目前共有"+memberAddBeanList.size()+"个群成员已经获取到");
-        List<SearchUserBean> searchUserBeansAll = LitePal.findAll(SearchUserBean.class);
-        LogUtils.e("---->", searchUserBeansAll.toString());
-        List<SearchUserBean> searchUserBeans = LitePal.where("isAdded = ?", "0").find(SearchUserBean.class);
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                List<LoginBean> regs = LitePal.findAll(LoginBean.class);
+                runOnUiThread(() -> {
+                    binding.tvHintMessage.setText("已经注册的账号一共" + regs.size() + "个");
+                    binding.tvHintMessage.append("\n");
+                });
+                List<MemberAddBean> memberAddBeanList = LitePal.findAll(MemberAddBean.class);
+                runOnUiThread(() -> {
+                    binding.btnGroupUser.setText("拉取群成员列表,目前共有"+memberAddBeanList.size()+"个群成员已经获取到");
+                });
+                List<SearchUserBean> searchUserBeansAll = LitePal.findAll(SearchUserBean.class);
+                LogUtils.e("---->", searchUserBeansAll.toString());
+                List<SearchUserBean> searchUserBeans = LitePal.where("isAdded = ?", "0").find(SearchUserBean.class);
 
-        binding.tvHintMessage.append("搜索到的用户数量：" + searchUserBeansAll.size() + "个");
-        binding.tvHintMessage.append("\n");
-        binding.tvHintMessage.append("搜索到的用户，但未添加的数量：" + searchUserBeans.size() + "个");
+                runOnUiThread(()->{
+                    binding.tvHintMessage.append("搜索到的用户数量：" + searchUserBeansAll.size() + "个");
+                    binding.tvHintMessage.append("\n");
+                    binding.tvHintMessage.append("搜索到的用户，但未添加的数量：" + searchUserBeans.size() + "个");
 
-        if(groupOwerInfo != null){
-            binding.btnGroupOwer.setText("群主账号已经登陆（每次启动都要登录）");
-            binding.btnGroupOwer.setEnabled(false);
-        }else{
-            binding.btnGroupOwer.setText("登录群主账号");
-            binding.btnGroupOwer.setEnabled(true);
-        }
+                    if(groupOwerInfo != null){
+                        binding.btnGroupOwer.setText("群主账号已经登陆（每次启动都要登录）");
+                        binding.btnGroupOwer.setEnabled(false);
+                    }else{
+                        binding.btnGroupOwer.setText("登录群主账号");
+                        binding.btnGroupOwer.setEnabled(true);
+                    }
 
-        if(needLoadGroupInfo != null){
-            binding.btnGroupLoader.setText("有群的账号已经登陆");
-            binding.btnGroupLoader.setEnabled(false);
-        }else{
-            binding.btnGroupLoader.setText("登录有群的账号（每次启动都要登录）");
-            binding.btnGroupLoader.setEnabled(true);
-        }
+                    if(needLoadGroupInfo != null){
+                        binding.btnGroupLoader.setText("有群的账号已经登陆");
+                        binding.btnGroupLoader.setEnabled(false);
+                    }else{
+                        binding.btnGroupLoader.setText("登录有群的账号（每次启动都要登录）");
+                        binding.btnGroupLoader.setEnabled(true);
+                    }
+                });
+            }
+        }.start();
     }
 
 

@@ -176,7 +176,7 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                     while(!request.setPersonInfo(loginBean.getToken(), phoneNum, nickname, susername)){
                         if(setPersonInfoCount > 3){
                             sendTextMessage("设置昵称失败"+request.getErrorMessage());
-                            continue;
+                            return;
                         }
                         setPersonInfoCount++;
                         sendTextMessage("开始尝试第"+setPersonInfoCount+"设置昵称");
@@ -194,9 +194,10 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                     while(!request.setUserName(loginBean.getToken(), username)){
                         if(setUserNameCount > 3){
                             sendTextMessage("设置用户名失败"+request.getErrorMessage());
-                            continue;
+                            return;
                         }
-                        sendTextMessage("开始尝试第"+setPersonInfoCount+"设置用户名");
+                        setUserNameCount++;
+                        sendTextMessage("开始尝试第"+setUserNameCount+"设置用户名");
                     }
 
                     sendTextMessage("设置用户名成功");
@@ -205,8 +206,10 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                     while(!request.setPwd(loginBean.getToken())){
                         if(setPwdCount > 3){
                             sendTextMessage("设置密码失败"+request.getErrorMessage());
-                            continue;
+                            return;
                         }
+                        setPwdCount++;
+                        sendTextMessage("开始尝试第"+setPwdCount+"设置密码");
                     }
                     sendTextMessage("设置密码成功");
                     loginBean.setUsername(username);
