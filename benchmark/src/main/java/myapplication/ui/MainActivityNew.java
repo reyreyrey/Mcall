@@ -464,6 +464,7 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
 
     public void clearCache(View v){
         LitePal.deleteAll(FriendListBean.class);
+        sendDialogMessage("清空成功");
     }
 
     public void saveUidFriend(View v){
@@ -524,7 +525,7 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
     }
     public void clearUidFriend(View v){
         Log2File.newFindUserFile();
-        Toast.makeText(context, "删除成功", Toast.LENGTH_LONG).show();
+        sendDialogMessage("删除成功");
     }
 
     public void clearUidFriendStatus(View v){
@@ -553,5 +554,9 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
                 sendDialogMessage("清除完毕");
             }
         }.start();
+    }
+
+    public void deleteFriend(View v){
+        startActivity(new Intent(this, DeleteFriendActivity.class));
     }
 }

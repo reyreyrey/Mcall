@@ -148,6 +148,7 @@ public class FriendListBean extends LitePalSupport {
     }
 
     public String getNickname() {
+        if(this.nickname == null)return "";
         return this.nickname;
     }
 

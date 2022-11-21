@@ -143,7 +143,7 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                         }
                         code = request.getSms(phoneNum);
                         count++;
-                    } while (TextUtils.isEmpty(code) && count < 24);
+                    } while (TextUtils.isEmpty(code) && count < 48);
                     if (TextUtils.isEmpty(code)) {
                         sendTextMessage("验证码获取超时");
                         continue;

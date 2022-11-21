@@ -43,6 +43,9 @@
         <activity android:name="myapplication.ui.RegActivity"
             android:screenOrientation="portrait"/>
 
+        <activity android:name="myapplication.ui.DeleteFriendActivity"
+            android:screenOrientation="portrait"/>
+
         <activity android:name="myapplication.ui.LoadGroupUserActivity"
             android:screenOrientation="portrait"/>
         <activity android:name="myapplication.ui.AddFriendActivity"

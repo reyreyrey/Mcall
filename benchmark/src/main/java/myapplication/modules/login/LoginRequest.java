@@ -29,6 +29,7 @@ import myapplication.modules.audit.AuditListApi;
 import myapplication.modules.audit.AuditListBean;
 import myapplication.modules.checkphone.CheckPhoneApi;
 import myapplication.modules.checkphone.CheckPhoneBean;
+import myapplication.modules.delete.DeleteFriendApi;
 import myapplication.modules.friendlist.FriendListApi;
 import myapplication.modules.friendlist.FriendListBean;
 import myapplication.modules.groupAddManage.GroupAddManageApi;
@@ -205,7 +206,7 @@ public class LoginRequest {
     public String getPhoneNum() {
         String json = null;
         try {
-            Response response = OkGo.get("http://api.my531.com/GetPhone/?token="+smsToken+"&id=17556&card=2")
+            Response response = OkGo.get("http://api.my531.com/GetPhone/?token="+smsToken+"&id=17556&card=2")//30522  33216  
 //                    .params("token", loginBean.getToken())
 //                    .params("project_id", project_id)
 //                    .params("operator", "4")
@@ -414,6 +415,28 @@ public class LoginRequest {
                                             .setGroup_id(groupId)
                                             .setUids(uids)
                                             )))
+                    .execute(new ResponseClass<HttpData<String>>() {
+                    });
+            return true;
+        } catch (Exception e) {
+            this.errorMessage = e.toString();
+            e.printStackTrace();
+
+        }
+        return false;
+
+    }
+
+    public boolean deleteFriend(String token,String otherid){
+        try {
+            EasyHttp
+                    .post(context)
+                    .api(new DeleteFriendApi()
+                            .setParam(gson.toJson(
+                                    new DeleteFriendApi.DeleteFriendParams()
+                                            .setToken(token)
+                                            .setOtherid(otherid)
+                            )))
                     .execute(new ResponseClass<HttpData<String>>() {
                     });
             return true;

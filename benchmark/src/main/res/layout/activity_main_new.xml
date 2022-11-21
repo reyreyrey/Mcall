@@ -175,6 +175,13 @@
                 android:text="清空已经加群的用户"
                 android:onClick="clearCache"/>
 
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="删除好友"
+                android:onClick="deleteFriend"/>
+
 
 
         </LinearLayout>
