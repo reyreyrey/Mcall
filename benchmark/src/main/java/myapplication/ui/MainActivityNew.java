@@ -142,8 +142,10 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
             @Override
             public void run() {
                 super.run();
+                showProgressDialog();
                 List<GroupListBean> listHttpData = request.getGroupList(groupOwerInfo.getToken());
                 if(listHttpData == null){
+                    dismissProgressDialog();
                     sendDialogMessage("获取群列表失败，原因："+request.getErrorMessage());
                     return;
                 }
@@ -153,6 +155,7 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
                     sb.append("群号："+groupListBean.getId());
                     sb.append("\n");
                 }
+                dismissProgressDialog();
                 sendDialogMessage(sb.toString());
             }
         }.start();
@@ -348,7 +351,7 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
                 ConfigBean configBean = Config.getConfig();
                 String username = configBean.getMainGroupAccount();
                 String password = MD5Utils.encode(configBean.getMainGroupPwd());
-                IsNewDeviceBean isNewDeviceBean = request.isNewDevice(username, password, Cons.main_deviceId);
+                IsNewDeviceBean isNewDeviceBean = request.isNewDevice(username, password, Cons.main_group_deviceId);
                 if(isNewDeviceBean == null){
                     dismissProgressDialog();
                     sendDialogMessage("主账号登录失败"+request.getErrorMessage());
@@ -382,10 +385,15 @@ public class MainActivityNew extends BaseMessageActivity<ActivityMainNewBinding>
         LoginBean bean = request.login(
                 configBean.getMainGroupAccount(),
                 configBean.getMainGroupPwd(),
-                Cons.main_deviceId,
-                Cons.main_clientId,
+                Cons.main_group_deviceId,
+                Cons.main_group_deviceId,
                 code);
         if(bean == null){
+            dismissProgressDialog();
+            sendDialogMessage("主账号登录失败"+request.getErrorMessage());
+            return;
+        }
+        if(bean.getId() == null){
             dismissProgressDialog();
             sendDialogMessage("主账号登录失败"+request.getErrorMessage());
             return;

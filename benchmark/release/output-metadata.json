@@ -11,9 +11,9 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 13,
-      "versionName": "1.0.3",
-      "outputFile": "benchmark-release.apk"
+      "versionCode": 15,
+      "versionName": "1.0.4",
+      "outputFile": "MCall-15-v1.0.4-release.apk"
     }
   ],
   "elementType": "File"

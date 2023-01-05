@@ -8,12 +8,18 @@ android {
         applicationId "com.mcall.d"
         minSdkVersion 26
         targetSdkVersion 32
-        versionCode 13
-        versionName "1.0.3"
+        versionCode 15
+        versionName "1.0.4"
         multiDexEnabled true
         ndk {
             // 设置支持的SO库架构
             abiFilters 'armeabi' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+        }
+    }
+    //打包APK的名称
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "MCall-${defaultConfig.versionCode}-v${defaultConfig.versionName}-${variant.buildType.name}.apk"
         }
     }
     buildTypes {
