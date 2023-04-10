@@ -102,7 +102,7 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                     sendTextMessage("开始设置代理");
                     IPProxyBean.Obj obj = IPProxy.setProxy(context);
 
-                    sendTextMessage("代理设置成功IP：" + obj.getIp() + ",端口：" + obj.getPort());
+                    sendTextMessage("代理设置成功IP：" + obj.getList().get(0));
 
                     sendTextMessage("开始注册第" + (i + 1) + "个账号");
                     sendTextMessage("开始获取手机号");

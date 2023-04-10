@@ -36,7 +36,7 @@ public class IPProxy {
             //String url = "http://pandavip.xiongmaodaili.com/xiongmao-web/apiPlus/vgb?secret=7f1676d501de4c881bf1c31148c84027&orderNo=VGB20220815182350WOaqowAS&count=10&isTxt=0&proxyType=1&validTime=0&removal=0&cityIds=";
 //           String url = "http://www.siyetian.com/index/apis_get.html?token=gHbi1yTUVVeNRVVw0ERRhXTR1STqFUeNpWQ00kaNBjTEVlMPRUSx0ERRFjTqdGN.gN4UTOxMTM2YTM&limit=1&type=0&time=0&split=0&split_text=&area=0&repeat=0&isp=";
 //            String url = Config.getConfig().getIpProxyUrl();
-            String url = "https://proxy.qg.net/extract?Key=183E6A05";
+            String url = "https://api.smartproxy.cn/web_v1/ip/get-ip?app_key=30150b6d5191cc3bb887055f0090ec69&pt=9&num=1&cc=&protocol=1&format=json&nr=%5Cr%5Cn";
            if(TextUtils.isEmpty(url))return null;
             Response response = OkGo.get(url)
                     .execute();
@@ -45,8 +45,8 @@ public class IPProxy {
 //            String ip = json.split(":")[0];
 //            int port = Integer.parseInt(json.split(":")[1]);
             IPProxyBean ipProxyBean = new GsonBuilder().create().fromJson(json, IPProxyBean.class);
-            if (ipProxyBean != null)
-                return ipProxyBean.getObj().get(0);
+            if (ipProxyBean != null && ipProxyBean.getCode() == 200)
+                return ipProxyBean.getData();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,8 +70,10 @@ public class IPProxy {
             }
         }
         IPProxyBean.Obj obj = IPProxy.getProxyConfig();
-        if(obj == null || TextUtils.isEmpty(obj.getIp()) ) return new IPProxyBean.Obj();
-        if (!isOnline(obj.getIp(), obj.getPort())) {
+        if(obj == null || obj.getList() == null || obj.getList().isEmpty()) return new IPProxyBean.Obj();
+        String address = obj.getList().get(0);
+        String [] ipAndPort = address.split(":");
+        if (!isOnline(ipAndPort[0], Integer.parseInt(ipAndPort[1]))) {
 
             setProxy(activity);
         }
@@ -88,7 +90,7 @@ public class IPProxy {
                         .build();
             }
         };
-        client = client.newBuilder().proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(obj.getIp(), obj.getPort())))
+        client = client.newBuilder().proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ipAndPort[0], Integer.parseInt(ipAndPort[1]))))
                 .proxyAuthenticator(proxyAuthenticator)
                 .build();
         EasyConfig.getInstance().setClient(client);

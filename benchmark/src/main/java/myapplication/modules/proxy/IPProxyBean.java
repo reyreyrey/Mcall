@@ -12,65 +12,46 @@ public class IPProxyBean {
 
         private String msg;
 
-        private Integer errno;
+        private Integer code;
 
-        private String code;
 
-        @SerializedName("Data")
-        private List<Obj> obj;
+        @SerializedName("data")
+        private Obj data;
 
-        public String getMsg() {
-            return this.msg;
-        }
+    public String getMsg() {
+        return msg;
+    }
 
-        public void setMsg(String msg) {
-            this.msg = msg;
-        }
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
 
-        public Integer getErrno() {
-            return this.errno;
-        }
+    public Integer getCode() {
+        return code;
+    }
 
-        public void setErrno(Integer errno) {
-            this.errno = errno;
-        }
+    public void setCode(Integer code) {
+        this.code = code;
+    }
 
-        public String getCode() {
-            return this.code;
-        }
+    public Obj getData() {
+        return data;
+    }
 
-        public void setCode(String code) {
-            this.code = code;
-        }
+    public void setData(Obj data) {
+        this.data = data;
+    }
 
-        public List<Obj> getObj() {
-            return this.obj;
-        }
 
-        public void setObj(List<Obj> obj) {
-            this.obj = obj;
-        }
+    public static class Obj implements Serializable {
+            private List<String> list;
 
-        public static class Obj implements Serializable {
-            private String port;
-            @SerializedName("IP")
-            private String ip;
-
-            public int getPort() {
-                if(TextUtils.isEmpty(port))return 0;
-                return Integer.parseInt(this.port);
+            public List<String> getList() {
+                return list;
             }
 
-            public void setPort(String port) {
-                this.port = port;
-            }
-
-            public String getIp() {
-                return this.ip;
-            }
-
-            public void setIp(String ip) {
-                this.ip = ip;
+            public void setList(List<String> list) {
+                this.list = list;
             }
         }
 
