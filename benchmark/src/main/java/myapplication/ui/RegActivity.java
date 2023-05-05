@@ -88,50 +88,50 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                     return;
                 }
 
-                double money = Double.parseDouble(request.smsyue);
-                sendTextMessage("接码平台登陆成功，余额：" + money);
+//                double money = Double.parseDouble(request.smsyue);
+//                sendTextMessage("接码平台登陆成功，余额：" + money);
 
-                if(money < 5){
-                    sendDialogMessage("余额少于5元，请登录接码平台充值，接码平台账号"+ Cons.sms_username+",密码："+Cons.sms_password);
-                    return;
-                }
+//                if(money < 5){
+//                    sendDialogMessage("余额少于5元，请登录接码平台充值，接码平台账号"+ Cons.sms_username+",密码："+Cons.sms_password);
+//                    return;
+//                }
 
 
                 for (int i = 0; i < Config.getConfig().getRegCount(); i++) {
                     if(!isStart)return;
                     sendTextMessage("开始设置代理");
-                    IPProxyBean.Obj obj = IPProxy.setProxy(context);
+                    IPProxy.setProxy(context);
 
-                    sendTextMessage("代理设置成功IP：" + obj.getList().get(0));
+
 
                     sendTextMessage("开始注册第" + (i + 1) + "个账号");
                     sendTextMessage("开始获取手机号");
-                    String phoneNum = request.getPhoneNum();
+                    String[] phoneNumAndToken = request.getPhoneNum();
 
-                    if (TextUtils.isEmpty(phoneNum)) {
+                    if (phoneNumAndToken == null) {
                         //号码不足
                         sendDialogMessage("接码平台手机号不足，请稍等再试下，退出注册流程");
                         return;
                     }
-                    phoneNum = "86-" + phoneNum;
-                    sendTextMessage("获取手机号成功：" + phoneNum);
+//                    phoneNum = "86-" + phoneNum;
+                    sendTextMessage("获取手机号成功：" + phoneNumAndToken[0]);
 
                     sendTextMessage("开始检测手机号是否可用");
-                    boolean b = request.checkPhone("86-" + phoneNum);
+                    boolean b = request.checkPhone(phoneNumAndToken[0]);
                     if (b) {
                         //号码已经存在了
-                        sendTextMessage("手机号" + phoneNum + "已经注册过了");
+                        sendTextMessage("手机号" + phoneNumAndToken[0] + "已经注册过了");
                         continue;
                     }
-                    sendTextMessage("手机号" + phoneNum + "可以使用，开始发送验证码");
+                    sendTextMessage("手机号" + phoneNumAndToken[0] + "可以使用，开始发送验证码");
                     //发送验证码
-                    boolean success = request.sendSms(phoneNum);
+                    boolean success = request.sendSms(phoneNumAndToken[0]);
                     if (!success) {
                         //发送失败
-                        sendTextMessage("手机号" + phoneNum + "验证码发送失败"+request.getErrorMessage());
+                        sendTextMessage("手机号" + phoneNumAndToken[0] + "验证码发送失败"+request.getErrorMessage());
                         continue;
                     }
-                    sendTextMessage("手机号" + phoneNum + "验证码已经发送，开始等待获取接码平台的验证码");
+                    sendTextMessage("手机号" + phoneNumAndToken[0] + "验证码已经发送，开始等待获取接码平台的验证码");
                     //开始获取验证码，先等待5S
 
                     String code;
@@ -141,7 +141,7 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                             sleep(5000);
                         } catch (InterruptedException e) {
                         }
-                        code = request.getSms(phoneNum);
+                        code = request.getSms(phoneNumAndToken);
                         count++;
                     } while (TextUtils.isEmpty(code) && count < 48);
                     if (TextUtils.isEmpty(code)) {
@@ -149,7 +149,7 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                         continue;
                     }
                     sendTextMessage("验证码获取成功，验证码是：" + code);
-                    if (!request.checkSmsCode(phoneNum, code)) {
+                    if (!request.checkSmsCode(phoneNumAndToken[0], code)) {
                         sendTextMessage("验证码检测失败"+request.getErrorMessage());
                         continue;
                     }
@@ -157,7 +157,7 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                     //登陆
                     String clientid = UUID.randomUUID().toString().toUpperCase(Locale.ROOT);
                     String deviceid = UUID.randomUUID().toString().toUpperCase(Locale.ROOT);
-                    LoginBean loginBean = request.loginByPhoneNum(phoneNum, code, clientid, deviceid);
+                    LoginBean loginBean = request.loginByPhoneNum(phoneNumAndToken[0], code, clientid, deviceid);
                     if(loginBean == null){
                         sendTextMessage("登录失败，原因："+request.getErrorMessage());
                         continue;
@@ -174,7 +174,7 @@ public class RegActivity extends BaseMessageActivity<ActivityRegBinding> {
                     int setPersonInfoCount = 0;
                     boolean setPersonInfoSuccess = true;
                     //设置用户名
-                    while(!request.setPersonInfo(loginBean.getToken(), phoneNum, nickname, susername)){
+                    while(!request.setPersonInfo(loginBean.getToken(), phoneNumAndToken[0], nickname, susername)){
                         if(setPersonInfoCount > 3){
                             sendTextMessage("设置昵称失败"+request.getErrorMessage());
                             setPersonInfoSuccess = false;

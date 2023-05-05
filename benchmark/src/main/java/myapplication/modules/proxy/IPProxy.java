@@ -28,22 +28,23 @@ import okhttp3.Response;
 import okhttp3.Route;
 
 public class IPProxy {
-    private static String userName = "183E6A05";
-    private static String password = "9439B58A4FC5";
+    private static String userName = "andrew";
+    private static String password = "666888aa";
     private static IPProxyBean.Obj getProxyConfig() {
         try {
-            Thread.sleep(1000);
+            //Thread.sleep(1000);
             //String url = "http://pandavip.xiongmaodaili.com/xiongmao-web/apiPlus/vgb?secret=7f1676d501de4c881bf1c31148c84027&orderNo=VGB20220815182350WOaqowAS&count=10&isTxt=0&proxyType=1&validTime=0&removal=0&cityIds=";
 //           String url = "http://www.siyetian.com/index/apis_get.html?token=gHbi1yTUVVeNRVVw0ERRhXTR1STqFUeNpWQ00kaNBjTEVlMPRUSx0ERRFjTqdGN.gN4UTOxMTM2YTM&limit=1&type=0&time=0&split=0&split_text=&area=0&repeat=0&isp=";
 //            String url = Config.getConfig().getIpProxyUrl();
-            String url = "https://api.smartproxy.cn/web_v1/ip/get-ip?app_key=30150b6d5191cc3bb887055f0090ec69&pt=9&num=1&cc=&protocol=1&format=json&nr=%5Cr%5Cn";
-           if(TextUtils.isEmpty(url))return null;
+            String url = "https://api.smartproxy.cn/web_v1/ip/get-ip?app_key=b858623744bf15154d74439cbf888af3&pt=9&num=20&cc=&protocol=1&format=txt&nr=%5Cr%5Cn";
+            //String url = "https://api.smartproxy.cn/web_v1/ip/get-ip?app_key=30150b6d5191cc3bb887055f0090ec69&pt=9&num=1&cc=&protocol=1&format=json&nr=%5Cr%5Cn";
+//           if(TextUtils.isEmpty(url))return null;
             Response response = OkGo.get(url)
                     .execute();
             String json = response.body().string();
             Log.e("---->", json);
-//            String ip = json.split(":")[0];
-//            int port = Integer.parseInt(json.split(":")[1]);
+////            String ip = json.split(":")[0];
+////            int port = Integer.parseInt(json.split(":")[1]);
             IPProxyBean ipProxyBean = new GsonBuilder().create().fromJson(json, IPProxyBean.class);
             if (ipProxyBean != null && ipProxyBean.getCode() == 200)
                 return ipProxyBean.getData();
@@ -55,7 +56,7 @@ public class IPProxy {
 
     private static long requestTime;
 
-    public static IPProxyBean.Obj setProxy(FragmentActivity activity) {
+    public static void setProxy(FragmentActivity activity) {
         if (requestTime == 0){
             requestTime = new Date().getTime();
         }else{
@@ -70,7 +71,7 @@ public class IPProxy {
             }
         }
         IPProxyBean.Obj obj = IPProxy.getProxyConfig();
-        if(obj == null || obj.getList() == null || obj.getList().isEmpty()) return new IPProxyBean.Obj();
+        if(obj == null || obj.getList() == null || obj.getList().isEmpty()) return;
         String address = obj.getList().get(0);
         String [] ipAndPort = address.split(":");
         if (!isOnline(ipAndPort[0], Integer.parseInt(ipAndPort[1]))) {
@@ -79,23 +80,25 @@ public class IPProxy {
         }
 
         Log.e("----->", "ip是通的");
-        //开始设置代理
         OkHttpClient client = EasyConfig.getInstance().getClient();
         Authenticator proxyAuthenticator = new Authenticator() {
             @Override
             public Request authenticate(Route route, Response response) throws IOException {
-                String credential = Credentials.basic(userName, password);
-                return response.request().newBuilder()
-                        .header("Proxy-Authorization", credential)
-                        .build();
+                //设置代理服务器账号密码
+                if(response.code() == 407) {
+                    String credential = Credentials.basic(userName, password);
+                    return response.request().newBuilder()
+                            .header("Proxy-Authorization", credential)
+                            .build();
+                }
+                return null;
             }
         };
-        client = client.newBuilder().proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(ipAndPort[0], Integer.parseInt(ipAndPort[1]))))
+        client = client.newBuilder().proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("proxy.smartproxycn.com", 1000)))
                 .proxyAuthenticator(proxyAuthenticator)
                 .build();
         EasyConfig.getInstance().setClient(client);
         requestTime = new Date().getTime();
-        return obj;
     }
 
     public static boolean isOnline(String path, int port) {

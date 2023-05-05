@@ -60,7 +60,7 @@ import okhttp3.Response;
 
 public class LoginRequest {
     private Gson gson;
-    public String smsToken,smsyue;
+    public String smsToken/*,smsyue*/;
     private ApplicationLifecycle context;
     public LoginRequest(FragmentActivity context) {
         this.context = ApplicationLifecycle.getInstance();
@@ -130,11 +130,11 @@ public class LoginRequest {
         return null;
     }
 
-    public String getSms(String phoneNum) {
-        phoneNum = phoneNum.replaceAll("86-", "");
+    public String getSms(String [] phoneNumAndToken) {
+        String url = "http://www.firefox.fun/yhapi.ashx?act=getPhoneCode&token="+smsToken+"&pkey="+phoneNumAndToken[1];
         String code = "";
         try {
-            Response response = OkGo.get("http://api.my531.com/GetMsg/?token="+smsToken+"&id=17556&phone="+phoneNum)
+            Response response = OkGo.get(url)
 //                    .params("token", smsLoginBean.getToken())
 //                    .params("project_id", project_id)
 //                    .params("phone_num", phoneNum)
@@ -144,13 +144,13 @@ public class LoginRequest {
             if(response == null)return "";
             String json = response.body().string();
             Log.e("----->json----》", json);
-            if(json.startsWith("1")){
-                String smsMessage = json.split("\\|")[1];
-                int index = smsMessage.indexOf(":");
-                smsMessage = smsMessage.substring(index+1, index+5);
-                Log.e("----->json----》", smsMessage);
-                return smsMessage;
-            }
+                String responseStrcode = json.split("\\|")[0];
+                if(responseStrcode.equalsIgnoreCase("0")){
+                    return null;
+                }else{
+                    return json.split("\\|")[1];
+                }
+
         } catch (Exception e) {
             this.errorMessage = e.toString();
             Log.e("----->", e.toString());
@@ -164,7 +164,7 @@ public class LoginRequest {
             return smsToken;
         }
         try {
-            Response response = OkGo.get("http://api.my531.com/Login/?username=mister&password=666888aa")
+            Response response = OkGo.get("https://www.firefox.fun/yhapi.ashx?act=login&ApiName=rea9279421485@gmail.com77&PassWord=666888aa")
 //                    .params("username", Cons.sms_username)
 //                    .params("password", Cons.sms_password)
                     .execute();
@@ -173,7 +173,7 @@ public class LoginRequest {
 
             if(result.startsWith("1")){
                 smsToken = result.split("\\|")[1];
-                smsyue = result.split("\\|")[2];
+//                smsyue = result.split("\\|")[2];
                 return smsToken;
             }
 
@@ -203,10 +203,11 @@ public class LoginRequest {
         }
     }
 
-    public String getPhoneNum() {
+    public String [] getPhoneNum() {
         String json = null;
         try {
-            Response response = OkGo.get("http://api.my531.com/GetPhone/?token="+smsToken+"&id=17556&card=2")//30522  33216  
+            String url = "https://www.firefox.fun/yhapi.ashx?act=getPhone&token="+smsToken+"&iid=2231";
+            Response response = OkGo.get(url)//30522  33216
 //                    .params("token", loginBean.getToken())
 //                    .params("project_id", project_id)
 //                    .params("operator", "4")
@@ -214,23 +215,30 @@ public class LoginRequest {
                     .execute();
             if(response == null)return null;
              json = response.body().string();
-             if(json.startsWith("1")){
-                 return json.split("\\|")[1];
-             }
+//             if(json.startsWith("1")){
+            //1|85F43F0CA6238E51A293CC05BCF607359E25497943163855|2023-05-05T10:42:04|zaf|27||COM6|614124194
+            String [] strs = json.split("\\|");
+            String [] redultd = new String[2];
+            redultd[0] = strs[4] + "-" + strs[7];
+            redultd[1] = strs[1];
+            return redultd;
+//             }
         } catch (Exception e) {
             this.errorMessage = e.toString();
             return null;
         }
-        String sub = json.substring(json.indexOf("1分钟内剩余取卡数:\":\"") + 13, json.indexOf("\",\"上线时间"));
-        int less = Integer.parseInt(sub);
-        if (less < 11) {
-            return "";
-        }
-        GetPhoneNumBean bean = new GsonBuilder().create().fromJson(json, GetPhoneNumBean.class);
-        String mobile = bean.getMessage().equalsIgnoreCase("ok") ? bean.getMobile() : "";
-        Log.e("----->", mobile);
-        return mobile;
+//        String sub = json.substring(json.indexOf("1分钟内剩余取卡数:\":\"") + 13, json.indexOf("\",\"上线时间"));
+//        int less = Integer.parseInt(sub);
+//        if (less < 11) {
+//            return "";
+//        }
+//        GetPhoneNumBean bean = new GsonBuilder().create().fromJson(json, GetPhoneNumBean.class);
+//        String mobile = bean.getMessage().equalsIgnoreCase("ok") ? bean.getMobile() : "";
+//        Log.e("----->", mobile);
+//        return mobile;
     }
+
+    public void releasePhoneNum(){}
 
     public boolean setPwd(String token){
         try {
